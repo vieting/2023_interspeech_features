@@ -1,0 +1,30 @@
+% regular commands
+\newcommand\refsec[1]{section~\ref{#1}}
+\newcommand\refSec[1]{Section~\ref{#1}}
+\newcommand\refcha[1]{chapter~\ref{#1}}
+\newcommand\refCha[1]{Chapter~\ref{#1}}
+\newcommand\refeqn[1]{equation~\ref{#1}}
+\newcommand\refEqn[1]{Equation~\ref{#1}}
+\newcommand\reffig[1]{figure~\ref{#1}}
+\newcommand\refFig[1]{Figure~\ref{#1}}
+\newcommand\refalg[1]{algorithm~\ref{#1}}
+\newcommand\refAlg[1]{Algorithm~\ref{#1}}
+\newcommand\refapp[1]{appendix~\ref{#1}}
+\newcommand\refApp[1]{Appendix~\ref{#1}}
+\newcommand\reftab[1]{table~\ref{#1}}
+\newcommand\refTab[1]{Table~\ref{#1}}
+\newcommand{\devclean}{\textit{dev-clean}\xspace}
+\newcommand{\devother}{\textit{dev-other}\xspace}
+\newcommand{\testclean}{\textit{test-clean}\xspace}
+\newcommand{\testother}{\textit{test-other}\xspace}
+\newcommand{\transformer}{\textit{Transformer}\xspace}
+\newcommand{\conformer}{\textit{Conformer}\xspace}
+\newcommand{\wvtwo}{\textit{wav2vec 2.0}\xspace}  % cannot use numbers in macro, see https://texfaq.org/FAQ-linmacnames
+\newcommand{\lrg}{\textit{Large}\xspace}  % \large is already used
+\newcommand{\glsarticle}[1]{\ifglsused{#1}{an}{a} \gls{#1}}
+\newcommand{\Glsarticle}[1]{\ifglsused{#1}{An}{A} \gls{#1}}
+\newcommand{\addref}{\textbf{[*]}}
+\newcommand{\comment}[1]{{\textit{\color{blue}#1}}}
+\newcommand{\draft}[1]{{\color{gray}#1}}
+\newcommand{\question}[1]{{\color{red}#1}}
+\newcommand{\TODO}[1]{{\color{red}TODO #1}}
