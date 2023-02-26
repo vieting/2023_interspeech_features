@@ -1,0 +1,18 @@
+
+\begin{table}[htbp]
+
+\centering
+\caption{Comparison of different feature extraction methods for a CTC model on Librispeech}
+\label{table:features_general}
+\begin{tabular}{|c|c|c|c|S|}
+\hline
+\multicolumn{2}{|c|}{Feature Extractor} & \multicolumn{2}{c|}{\#Params} &       {WER} \\\hline
+                                   Type &           Name &                         Total &   FE & {dev-other} \\\hline
+                                  Fixed & Mel Filterbank &                          None & None &         6.9 \\\cline{2-5}
+                                        &      Gammatone &                         73.7M &  32k &         7.1 \\\hline
+                                     NN &             i6 &                         85.2M &  40k &         7.1 \\\cline{2-5}
+                                        &    wav2vec 2.0 &                         89.5M & 4.1M &         6.8 \\
+\hline
+\end{tabular}
+
+\end{table}
