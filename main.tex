@@ -10,7 +10,11 @@
 \interspeechcameraready 
 
 % imports
+\usepackage[acronym,toc,shortcuts,nonumberlist]{glossaries}
+\usepackage{multirow}
 \usepackage{siunitx}
+\usepackage{xcolor}
+
 \input{acronyms}
 \input{commands}
 
@@ -35,8 +39,42 @@
 \section{Related work}
 
 \section{Methods}
+\subsection{Feature Extractors}
+In this work, we compare different feature extraction methods -- namely log Mel filterbank features, Gammatone features \cite{schlueter:icassp07}, \gls{SCF} features \cite{tuske2018:waveform} and the \gls{FE} of the \wvtwo model \cite{facebook2020wav2vec2}.
+
+\subsection{Model Sizes}
+By default, I use 40k parameters for i6 features compared to 4M for \wvtwo.
+Can we improve the performance by making the model larger?
+\subsubsection{wav2vec 2.0 Components}
+To understand where \wvtwo uses the parameters and how much they contribute to the \gls{FE}'s performance, we run it with different configurations.
+The results for different widths and depths are shown in \refTab{table:features_w2v_size}.
+% Kernel sizes and strides were chosen as (10, 3, 3, 3, 3, 2), (5, 2, 2, 2, 2, 2) for 6 layers, (10, 6, 3, 3, 3), (5, 4, 2, 2, 2) for 5 layers, (10, 6, 6, 3), (5, 4, 4, 2) for 4 layers, (20, 6, 6), (10, 4, 4) for 3 layers, (32, 20), (16, 10) for 2 layers and (320), (160) for 1 layer.
+While a larger inner dimension leads to a better performance, no major effect can be observed regarding the number of layers.
+The final projection additionally improves the performance, see \refTab{table:features_w2v_proj}.
+We can additionally vary the kernel size and final norm.
+
+\subsubsection{Inner Dimensions}
+As a larger inner dimension clearly showed better performance for the \wvtwo \gls{FE}, we increase the inner dimensions of the i6 features as well.
+However, as shown in \refTab{table:features_i6_size}, neither increasing the inner dimension of the first layer nor the second layer helps to improve the performance.
+
+\subsubsection{First Layer Window Size}
+What role does the size of the first layer play? Is it important to cover one pitch period (max. fundamental period)?
+By default, I use a window size of \SI{16}{\milli\second}.
+Experiments on using different window sizes in \refTab{table:features_window_size} suggest that a larger window size has a detrimental effect while going from the default \SI{16}{\milli\second} down to \SI{10}{\milli\second} shows a marginal improvement.
 
 \section{Results}
+The results for the different feature extractors used with a competitive \gls{CTC} model on Librispeech are shown in \refTab{table:features_general}.
+\input{tables/features_general}
+
+\subsection{Model Sizes}
+Results are in the following tables.
+\input{tables/features_w2v_size}
+\input{tables/features_w2v_proj}
+\input{tables/features_i6_size}
+\input{tables/features_window_size}
+
+\subsection{\wvtwo Pre-Training}
+\input{tables/features_pretraining}
 
 \section{Conclusions}
 
