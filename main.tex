@@ -69,9 +69,35 @@ The first layer applies group normalization and finally, layer normalization and
 }
 
 \section{Methods}
-\subsection{Feature Extractors}
-In this work, we compare different feature extraction methods -- namely log Mel filterbank features, Gammatone features \cite{schlueter:icassp07}, \gls{SCF} features \cite{tuske2018:waveform} and the \gls{FE} of the \wvtwo model \cite{facebook2020wav2vec2}.
+We always normalize the waveform to zero mean and unit variance.
+Then, it is input to a \fe.
+The \fe is followed by the remaining \gls{AM}.
+While the separation between \fe and remaining \gls{AM} is not sharp for neural feature extraction, we always refer to the part that replaces the traditional feature extraction as \fe.
 
+\subsection{Feature Extractors}
+\subsubsection{Standard Feature Extraction}
+As a reference, we use standard, hand-designed \fes -- namely log Mel filterbank features and Gammatone features.
+To compute the log Mel filterbank features, first the \gls{STFT} of the waveform is computed with a window size of \SI{25}{\milli\second} and a shift of \SI{10}{\milli\second}.
+We keep the square of the magnitude and perform Mel warping to obtain a 80-dim vector.
+Finally, $\log_{10}$ and normalization are applied.
+
+Gammatone features apply a gammatone filterbank to the pre-emphasized speech signal, perform temporal integration over each channel using a low pass filter, i.e., the Hanning window with a size of \SI{25}{\milli\second} and a shift of \SI{10}{\milli\second}, compress using the $10^{th}$ root and finally compute the \gls{DCT} of the values \cite{schlueter:icassp07}.
+Further, the the resulting 50-dim features are normalized.
+
+\subsubsection{\wvtwo Feature Extractor}
+The \gls{FE} of the \wvtwo model \cite{facebook2020wav2vec2}.
+
+\subsubsection{Supervised Convolutional Features}
+As an alternative comparable neural feature extraction method, we use \gls{SCF} \cite{tuske2018:waveform}.
+Similarly, a convolutional filterbank with learnable parameters is applied to the waveform.
+As in the case of Gammatones, a temporal integration is performed over each channel.
+However, in this case multiple filters are used for temporal integration allowing for multi-resolutional processing.
+Additionally, these filters are learned during training.
+We set the size of the first filterbank to 256, its strides to 10 and the number of channels to 150.
+The second convolutional filter applies 5 temporal integration filters with a size of 40 and strides of 16 each.
+Since the output of all 5 filters is stacked, we have a resulting feature dimension of 750.
+
+\section{Experiments}
 \subsection{Model Sizes}
 By default, I use 40k parameters for i6 features compared to 4M for \wvtwo.
 Can we improve the performance by making the model larger?
