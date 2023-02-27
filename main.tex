@@ -54,6 +54,7 @@ Highlight contributions of this paper.
 \section{Related work}
 \draft{
 Works on raw waveform acoustic modeling.
+Think about how to properly reference \cite{vieting2021waveform} without disclosing author information.
 
 Different \wv papers \cite{facebook2019wav2vec, facebook2019vqwav2vec, facebook2020wav2vec2, facebook2020xlsr}.
 Describe differences between the approaches.
@@ -61,7 +62,10 @@ Besides modifications of the self-supervised training criteria -- moving from th
 Fully convolutional vs. \transformer.
 Differences in \fe.
 
-Think about how to properly reference \cite{vieting2021waveform} without disclosing author information.
+\cite{facebook2019wav2vec} uses 5 layers with kernel sizes (10, 8, 4, 4, 4) and strides which are always exactly half the kernel size.
+All have 512 channels, a group normalization layer with a single group and a \relu nonlinearity.
+\cite{facebook2020wav2vec2} uses seven layers with kernel sizes (10, 3, 3, 3, 3, 2, 2), strides (5, 2, 2, 2, 2, 2, 2), and a GELU activation function.
+The first layer applies group normalization and finally, layer normalization and a linear projection is added.
 }
 
 \section{Methods}
