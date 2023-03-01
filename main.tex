@@ -65,7 +65,7 @@ Differences in \fe.
 \cite{facebook2019wav2vec} uses 5 layers with kernel sizes (10, 8, 4, 4, 4) and strides which are always exactly half the kernel size.
 All have 512 channels, a group normalization layer with a single group and a \relu nonlinearity.
 \cite{facebook2020wav2vec2} uses seven layers with kernel sizes (10, 3, 3, 3, 3, 2, 2), strides (5, 2, 2, 2, 2, 2, 2), and a GELU activation function.
-The first layer applies group normalization and finally, layer normalization and a linear projection is added.
+The first layer applies group normalization and finally, layer normalization and a linear projection are added.
 }
 
 \section{Methods}
@@ -77,15 +77,20 @@ While the separation between \fe and remaining \gls{AM} is not sharp for neural 
 \subsection{Feature Extractors}
 \subsubsection{Standard Feature Extraction}
 As a reference, we use standard, hand-designed \fes -- namely log Mel filterbank features and Gammatone features.
-To compute the log Mel filterbank features, first the \gls{STFT} of the waveform is computed with a window size of \SI{25}{\milli\second} and a shift of \SI{10}{\milli\second}.
+To compute the log Mel filterbank features, first the \gls{STFT} of the waveform is computed with a window size of \ms{25} and a shift of \ms{10}.
 We keep the square of the magnitude and perform Mel warping to obtain a 80-dim vector.
 Finally, $\log_{10}$ and normalization are applied.
 
-Gammatone features apply a gammatone filterbank to the pre-emphasized speech signal, perform temporal integration over each channel using a low pass filter, i.e., the Hanning window with a size of \SI{25}{\milli\second} and a shift of \SI{10}{\milli\second}, compress using the $10^{th}$ root and finally compute the \gls{DCT} of the values \cite{schlueter:icassp07}.
+Gammatone features apply a gammatone filterbank to the pre-emphasized speech signal, perform temporal integration over each channel using a low pass filter, i.e., the Hanning window with a size of \ms{25} and a shift of \ms{10}, compress using the $10^{th}$ root and finally compute the \gls{DCT} of the values \cite{schlueter:icassp07}.
 Further, the the resulting 50-dim features are normalized.
 
 \subsubsection{\wvtwo Feature Extractor}
-The \gls{FE} of the \wvtwo model \cite{facebook2020wav2vec2}.
+The \gls{FE} of the \wvtwo model \cite{facebook2020wav2vec2} mainly consists of 7 convolutional layers.
+They are configured with kernel sizes (10, 3, 3, 3, 3, 2, 2), strides (5, 2, 2, 2, 2, 2, 2), and a GELU activation function.
+The first layer applies group normalization and finally, layer normalization and a linear projection is added.
+The total receptive field of the \wvtwo \fe is \ms{9999} and the shift between consecutive frames is \ms{20}.
+Since the other \fes operate at a shift of \ms{10} and the \wvtwo \fe is built in a modular way, we remove the last layer with a stride of 2 in order to achieve features at the same frame rate.
+This reduces the total receptive field to \ms{9999}.
 
 \subsubsection{Supervised Convolutional Features}
 As an alternative comparable neural feature extraction method, we use \gls{SCF} \cite{tuske2018:waveform}.
@@ -96,6 +101,7 @@ Additionally, these filters are learned during training.
 We set the size of the first filterbank to 256, its strides to 10 and the number of channels to 150.
 The second convolutional filter applies 5 temporal integration filters with a size of 40 and strides of 16 each.
 Since the output of all 5 filters is stacked, we have a resulting feature dimension of 750.
+The total receptive field of the \gls{SCF} is \ms{9999}.
 
 \section{Experiments}
 \subsection{Model Sizes}
@@ -115,8 +121,8 @@ However, as shown in \refTab{table:features_i6_size}, neither increasing the inn
 
 \subsubsection{First Layer Window Size}
 What role does the size of the first layer play? Is it important to cover one pitch period (max. fundamental period)?
-By default, I use a window size of \SI{16}{\milli\second}.
-Experiments on using different window sizes in \refTab{table:features_window_size} suggest that a larger window size has a detrimental effect while going from the default \SI{16}{\milli\second} down to \SI{10}{\milli\second} shows a marginal improvement.
+By default, I use a window size of \ms{16}.
+Experiments on using different window sizes in \refTab{table:features_window_size} suggest that a larger window size has a detrimental effect while going from the default \ms{16} down to \ms{10} shows a marginal improvement.
 
 \section{Results}
 The results for the different feature extractors used with a competitive \gls{CTC} model on Librispeech are shown in \refTab{table:features_general}.
