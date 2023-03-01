@@ -20,6 +20,7 @@ spell:
 font:
 	pdftops $(TARGET).pdf $(TARGET).ps
 	ps2pdf -dPDFSETTINGS=/prepress $(TARGET).ps $(FINAL).pdf
+	rm main.ps
 
 clean:
 	rm -f \
