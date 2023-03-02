@@ -41,11 +41,24 @@ Finally, we analyze the learned representations of both neural \fes.
 
 
 \section{Introduction}
+\glspl{AM} for \gls{ASR} traditionally makes use of hand-designed feature extraction methods like log Mel filterbank features \addref or Gammatone features \cite{schlueter:icassp07}.
+These techniques are motivated by insights into the properties of the human auditory system.
+However, their fixed design inevitably leads to information loss during the feature extraction.
+
+This issue can be addressed by neural \fes.
+Since their parameters are learned during training, these \fes can adapt to the need of \glspl{AM} and the loss of particularly helpful information may be avoided.
+A number of works have been proposed in this direction, often using convolutional \glspl{NN} \addref but also applying parametrized functions \cite{ravanelli2018sincnet} and other architectures \cite{sainath2015cldnn}.
+
+Recently, the \wvtwo framework \cite{facebook2020wav2vec2} has received large attention.
+It is mainly known for its contrastive self-supervised pre-training, which allows to pre-train a model on large amounts of unlabeled audio data.
+Subsequently, it can be fine-tuned for a specific downstream task at hand.
+While the context network with multiple \transformer blocks constitutes the major part of the architecture, the \wvtwo model also makes use of a convolutional feature encoder.
+\TODO{feature encoder vs. \fe here.}
+
+While the \wvtwo \fe is similar to other neural feature extraction methods, it is not yet closely studied in the literature.
+Choi et al. study the feature encoder\footnote{K. Choi and E. J. Yeo, “Opening the black box of wav2vec feature encoder,” arXiv preprint arXiv:2210.15386, 2022.}.%\cite{choi2022w2v2fe}
+
 \draft{
-Why is raw waveform modeling interesting?
-
-\wvtwo is very successful and uses neural \fe.
-
 Comparable to other neural feature extraction methods, but not closely studied in the literature.
 Maybe some references or name some works which are similar.
 
