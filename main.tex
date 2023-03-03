@@ -59,12 +59,14 @@ While the context network with multiple \transformer blocks constitutes the majo
 \TODO{feature encoder vs. \fe here.}
 
 While the \wvtwo \fe is similar to other neural feature extraction methods, it is not yet closely studied in the literature.
-Choi et al. study the feature encoder\citearxiv{choi2022w2v2fe}.
+\cite{choi2022w2v2fe} studies the feature encoder by feeding synthesized sine waves.
+The authors observe that enough temporal detail is obtained and information about fundamental frequencies is represented in the model's output.
+In particular, they claim that the frequencies are distributed linearly over the Hertz scale, unlike perceptually motivated scales like the Mel scale or the Greenwood function for Gammatone features.
+\draft{
+Other works that analyze \wvtwo models rather focus on the large \transformer part of the network which operates at a higher level of abstraction \cite{livescu2021wav2vec_analysis}\TODO{updated version and add more papers (references in Choi et al. or Livescu et al.}.
+}
 
 \draft{
-Comparable to other neural feature extraction methods, but not closely studied in the literature.
-Maybe some references or name some works which are similar.
-
 Highlight contributions of this paper.
 }
 
@@ -83,6 +85,9 @@ Differences in \fe.
 All have 512 channels, a group normalization layer with a single group and a \relu nonlinearity.
 \cite{facebook2020wav2vec2} uses seven layers with kernel sizes (10, 3, 3, 3, 3, 2, 2), strides (5, 2, 2, 2, 2, 2, 2), and a GELU activation function.
 The first layer applies group normalization and finally, layer normalization and a linear projection are added.
+
+\cite{asapp2022performance} investigates different settings for the \wvtwo \fe and shows that the required computation can be significantly reduced while maintaining \TODO{similar} performance.
+However, this is always done in the whole \wvtwo framework and not \TODO{what is different to us?}
 }
 
 \section{Methods}
