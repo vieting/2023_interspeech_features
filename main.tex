@@ -91,8 +91,8 @@ However, this is always done in the whole \wvtwo framework and not \TODO{what is
 }
 
 \section{Methods}
-We always normalize the waveform to zero mean and unit variance.
-Then, it is input to a \fe.
+This work compares different \fes' applicability for \gls{ASR}.
+We always normalize the waveform to zero mean and unit variance before it is input to a \fe.
 The \fe is followed by the remaining \gls{AM}.
 While the separation between \fe and remaining \gls{AM} is not sharp for neural feature extraction, we always refer to the part that replaces the traditional feature extraction as \fe.
 
@@ -120,12 +120,45 @@ Similarly, a convolutional filterbank with learnable parameters is applied to th
 As in the case of Gammatones, a temporal integration is performed over each channel.
 However, in this case multiple filters are used for temporal integration allowing for multi-resolutional processing.
 Additionally, these filters are learned during training.
-We set the size of the first filterbank to 256, its strides to 10 and the number of channels to 150.
+By default, we set the size of the first filterbank to 256, its strides to 10 and the number of channels to 150.
 The second convolutional filter applies 5 temporal integration filters with a size of 40 and strides of 16 each.
 Since the output of all 5 filters is stacked, we have a resulting feature dimension of 750.
 The total receptive field of the \gls{SCF} is \ms{9999}.
 
-\section{Experiments}
+\subsection{Acoustic Model}
+The \gls{AM} mainly consists of \gls{VGG} \addref blocks for downsampling and 12 \conformer blocks.
+The \gls{VGG} downsampling uses three 3x3-convolutional layers with 32, 64 and 64 channels, respectively.
+In total, a subsampling factor of 4 in the time dimension is achieved by the strided convolutions so that the \conformer operates on frames with a shift of \SI{40}{\milli\second}.
+The feature dimension is reduced by a factor of 2 due to max pooling and then multiplied by the number of channels in the last convolution resulting in a total increase by factor 32 in our case.
+\draft{
+There is a linear layer and dropout here.
+The \conformer blocks should be described here.
+}
+The configuration follows the setup in \cite{zeineldeen2022robustconformer} \TODO{check!}.
+
+\subsection{Connectionist Temporal Classification}
+We use a \gls{CTC} model for our experiments.
+It follows the setup described for the \gls{CTC} model in \cite{zhou2022efficient}.
+\TODO{Cite Wei's paper and add more description of the CTC model.}
+All models are trained in a purely supervised fashion unless explicitly stated otherwise.
+\TODO{Do we use an LM?}
+
+\section{Experimental Setup}
+\subsection{Data}
+We conduct experiments on the 960h LibriSpeech corpus \cite{panayotov2015librispeech}.
+For the experiments using a pre-trained \wvtwo \fe, the same 960h were used in pre-training.
+\draft{The \gls{LM} was trained on the default LibriSpeech \gls{LM} training data which includes the transcriptions of the training set along with the additional
+800M-word text-only data.}
+The evaluation is done on the standard \devclean, \devother, \testclean and \testother sets.
+
+\subsection{Training Details}
+\draft{We follow the setup in \TODO{Wei's paper} \addref.}
+The batch size is 640k samples, which corresponds to \SI{40}{\second} of speech waveform and the gradients are accumulated over 3 steps.
+The \TODO{NAdam} optimizer uses a \gls{OCLR} schedule with a peak learning rate of \TODO{X} as described in .
+Each model is trained on a single \gls{GPU}.
+\TODO{What about chunking? More details needed?}
+
+\section{Results}
 \subsection{Model Sizes}
 By default, I use 40k parameters for i6 features compared to 4M for \wvtwo.
 Can we improve the performance by making the model larger?
@@ -178,6 +211,7 @@ Results are in the following tables.
 \section{To Dos/Questions}
 \begin{itemize}
   \item \wvtwo feature extractor vs. feature encoder
+  \item check for arxiv citations
 \end{itemize}
 }
 
