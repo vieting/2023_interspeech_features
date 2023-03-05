@@ -210,6 +210,22 @@ We hypothesize that the pre-training mainly benefits the \transformer encoder an
 \input{tables/features_pretraining}
 
 \subsection{Frequency Response of Learned Filters}
+Finally, we analyze the learned filters of the neural \fes.
+This is done by plotting the frequency response of the filters in the first layer which operates on the raw waveform.
+As the order of learned filters in a convolutional layer is arbitrary, we sort the filters by the peak value of the frequency response.
+The plots are depicted in \refFig{fig:first_layer}.
+The color range is shared between all subplots.
+
+The well known distribution of the Gammatone filters is given in \refFig{fig:first_layer}(a).
+\refFig{fig:first_layer}(b) shows the frequency response of the learned \gls{SC} filters.
+In line with \cite{tuske2018:waveform}, bandpass filters with a non-linear distribution of center frequencies are learned.
+The distribution resembles the Gammatone filterbank and with higher center frequencies, the pass band is also wider.
+However, the stopband attenuation is clearly weaker.
+
+The distribution for the \wvtwo \fe's first layer in \refFig{fig:first_layer}(c) does not entail this degree of resemblance.
+Again, bandpass filters are learned, however, they have a wider passband, their center frequencies are distributed rather linearly and the stopband attenuation is weak.
+Interestingly, the frequency response of the pre-trained \wvtwo \fe in \refFig{fig:first_layer}(d) is very similar to \refFig{fig:first_layer}(c).
+This indicates that the properties learned in unsupervised pre-training and supervised \gls{CTC} training are similar.
 \input{figures/first_layer}
 
 \section{Conclusions}
