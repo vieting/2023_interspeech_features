@@ -140,8 +140,9 @@ The configuration follows the setup in \cite{zeineldeen2022robustconformer} \TOD
 We use a \gls{CTC} model for our experiments.
 It follows the setup described for the \gls{CTC} model in \cite{zhou2022efficient}.
 \TODO{Cite Wei's paper and add more description of the CTC model.}
-All models are trained in a purely supervised fashion unless explicitly stated otherwise.
-\TODO{Do we use an LM?}
+All models are trained in a purely supervised fashion using the \gls{CTC} objective unless explicitly stated otherwise.
+A 4-gram \gls{LM} is used and integrated using shallow fusion \cite{gulcehre2015shallow} during decoding.
+\TODO{Check LM usage.}
 
 \section{Experimental Setup}
 \subsection{Data}
@@ -217,15 +218,15 @@ As the order of learned filters in a convolutional layer is arbitrary, we sort t
 The plots are depicted in \refFig{fig:first_layer}.
 The color range is shared between all subplots.
 
-The well known distribution of the Gammatone filters is given in \refFig{fig:first_layer}(a).
-\refFig{fig:first_layer}(b) shows the frequency response of the learned \gls{SC} filters.
+The well known distribution of the Gammatone filters is given in \refFig{fig:first_layer}\,(a).
+\refFig{fig:first_layer}\,(b) shows the frequency response of the learned \gls{SC} filters.
 In line with \cite{tuske2018:waveform}, bandpass filters with a non-linear distribution of center frequencies are learned.
 The distribution resembles the Gammatone filterbank and with higher center frequencies, the pass band is also wider.
 However, the stopband attenuation is clearly weaker.
 
-The distribution for the \wvtwo \fe's first layer in \refFig{fig:first_layer}(c) does not entail this degree of resemblance.
+The distribution for the \wvtwo \fe's first layer in \refFig{fig:first_layer}\,(c) does not entail this degree of resemblance.
 Again, bandpass filters are learned, however, they have a wider passband, their center frequencies are distributed rather linearly and the stopband attenuation is weak.
-Interestingly, the frequency response of the pre-trained \wvtwo \fe in \refFig{fig:first_layer}(d) is very similar to \refFig{fig:first_layer}(c).
+Interestingly, the frequency response of the pre-trained \wvtwo \fe in \refFig{fig:first_layer}\,(d) is very similar to \refFig{fig:first_layer}\,(c).
 This indicates that the properties learned in unsupervised pre-training and supervised \gls{CTC} training are similar.
 \input{figures/first_layer}
 
