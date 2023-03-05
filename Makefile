@@ -39,6 +39,6 @@ clean:
 %.pdf: %.eps
 	eps2pdf $<
 
-all: build_tables move_figures default bib default default
+all: build_tables default bib default default
 
 final: all font
