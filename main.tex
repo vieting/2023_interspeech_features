@@ -115,7 +115,7 @@ Since the other \fes operate at a shift of \ms{10} and the \wvtwo \fe is built i
 This reduces the total receptive field to \ms{9999}.
 
 \subsubsection{Supervised Convolutional Features}
-As an alternative comparable neural feature extraction method, we use \gls{SCF} \cite{tuske2018:waveform}.
+As an alternative comparable neural feature extraction method, we use \gls{SC} features \cite{tuske2018:waveform, vieting2021waveform}.
 Similarly, a convolutional filterbank with learnable parameters is applied to the waveform.
 As in the case of Gammatones, a temporal integration is performed over each channel.
 However, in this case multiple filters are used for temporal integration allowing for multi-resolutional processing.
@@ -123,7 +123,7 @@ Additionally, these filters are learned during training.
 By default, we set the size of the first filterbank to 256, its strides to 10 and the number of channels to 150.
 The second convolutional filter applies 5 temporal integration filters with a size of 40 and strides of 16 each.
 Since the output of all 5 filters is stacked, we have a resulting feature dimension of 750.
-The total receptive field of the \gls{SCF} is \ms{9999}.
+The total receptive field of the \gls{SC} features is \ms{9999}.
 
 \subsection{Acoustic Model}
 The \gls{AM} mainly consists of \gls{VGG} \addref blocks for downsampling and 12 \conformer blocks.
@@ -145,7 +145,7 @@ All models are trained in a purely supervised fashion unless explicitly stated o
 
 \section{Experimental Setup}
 \subsection{Data}
-We conduct experiments on the 960h LibriSpeech corpus \cite{panayotov2015librispeech}.
+We conduct experiments on the 960h LibriSpeech corpus \cite{panayotov2015librispeech}, which consists of read English speech.
 For the experiments using a pre-trained \wvtwo \fe, the same 960h were used in pre-training.
 \draft{The \gls{LM} was trained on the default LibriSpeech \gls{LM} training data which includes the transcriptions of the training set along with the additional
 800M-word text-only data.}
@@ -159,32 +159,45 @@ Each model is trained on a single \gls{GPU}.
 \TODO{What about chunking? More details needed?}
 
 \section{Results}
-The results for the different feature extractors used with a competitive \gls{CTC} model on Librispeech are shown in \refTab{table:features_general}.
+The results, namely the \glspl{WER} on the LibriSpeech \textit{dev} and \textit{test} sets, for the different \fes are shown in \refTab{table:features_general}.
+We can observe that all are within a close range.
+The \gls{SC} features slightly outperform the Gammatone baseline, while log Mel features are again marginally better and the \wvtwo \fe yields the best results.
+This demonstrates that learnable neural \fes are competitive with hand-designed methods in a purely supervised setup with 960h of training data.
+However, a clear advantage of these techniques cannot be deduced from the experimental results.
 \input{tables/features_general}
 
 \subsection{Model Sizes}
-By default, I use 40k parameters for i6 features compared to 4M for \wvtwo.
-Can we improve the performance by making the model larger?
+It is striking that the \wv2 \fe uses 100x more parameters than the \gls{SC} architecture.
+We therefore study the contribution of its components in \refSec{sec:w2v_components} and increase the number of parameters in the \gls{SC} model in \refSec{sec:scf_size}.
+Additionally, the size of the first window operating on the waveform is analyzed in \refSec{sec:scf_first_window}.
 
-\subsubsection{wav2vec 2.0 Components}
+\subsubsection{Dissecting the wav2vec 2.0 Feature Extractor}
+\label{sec:w2v_components}
 To understand where \wvtwo uses the parameters and how much they contribute to the \gls{FE}'s performance, we run it with different configurations.
 The results for different widths and depths are shown in \refTab{table:features_w2v_size}.
-% Kernel sizes and strides were chosen as (10, 3, 3, 3, 3, 2), (5, 2, 2, 2, 2, 2) for 6 layers, (10, 6, 3, 3, 3), (5, 4, 2, 2, 2) for 5 layers, (10, 6, 6, 3), (5, 4, 4, 2) for 4 layers, (20, 6, 6), (10, 4, 4) for 3 layers, (32, 20), (16, 10) for 2 layers and (320), (160) for 1 layer.
-While a larger inner dimension leads to a better performance, no major effect can be observed regarding the number of layers.
-The final projection additionally improves the performance, see \refTab{table:features_w2v_proj}.
-We can additionally vary the kernel size and final norm.
+The kernel sizes and strides were chosen as (10, 3, 3, 3, 3, 2), (5, 2, 2, 2, 2, 2) for 6 layers, (10, 6, 3, 3, 3), (5, 4, 2, 2, 2) for 5 layers, (10, 6, 6, 3), (5, 4, 4, 2) for 4 layers, (20, 6, 6), (10, 4, 4) for 3 layers and (32, 20), (16, 10) for 2 layers.
+The results show that a larger inner dimension leads to a better performance
+In contrast, no major effect can be observed regarding the number of layers.
+We also tried a variant with only one layer using kernel size 320 and stride 160 which did not converge.
+The final projection, which comprises about \TODO{400k} parameters, additionally improves the performance as shown in \refTab{table:features_w2v_proj}.
 \input{tables/features_w2v_size}
 \input{tables/features_w2v_proj}
 
-\subsubsection{Inner Dimensions}
-As a larger inner dimension clearly showed better performance for the \wvtwo \gls{FE}, we increase the inner dimensions of the i6 features as well.
-However, as shown in \refTab{table:features_i6_size}, neither increasing the inner dimension of the first layer nor the second layer helps to improve the performance.
-\input{tables/features_i6_size}
+\subsubsection{\draft{Inner Dimensions}}
+\label{sec:scf_size}
+As a larger inner dimension clearly showed better performance for the \wvtwo \gls{FE}, we increase the inner dimensions of the \gls{SC} features as well.
+However, as shown in \refTab{table:features_scf_size}, neither increasing the number of filters operating on the waveform nor the number of kernels for the multi-resolutional temporal integration helps to improve the performance.
+Note that the number of parameters of the full model is even larger than for the \wvtwo model in \refTab{table:features_general}, however, a large portion of those parameters is consumed by the linear projection of the features after the \gls{VGG} block.
+\input{tables/features_scf_size}
 
 \subsubsection{First Layer Window Size}
+\label{sec:scf_first_window}
+\draft{
 What role does the size of the first layer play? Is it important to cover one pitch period (max. fundamental period)?
 By default, I use a window size of \ms{16}.
 Experiments on using different window sizes in \refTab{table:features_window_size} suggest that a larger window size has a detrimental effect while going from the default \ms{16} down to \ms{10} shows a marginal improvement.
+}
+Note that all experiments in \refSec{sec:scf_size} use a window size of \ms{16}.
 \input{tables/features_window_size}
 
 \subsection{\wvtwo Pre-Training}
