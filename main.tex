@@ -10,14 +10,12 @@
 \interspeechcameraready 
 
 % imports
-\usepackage{bibentry}
 \usepackage[acronym,toc,shortcuts,nonumberlist]{glossaries}
 \usepackage{multirow}
 \usepackage{pgfplots}
 \usepackage{siunitx}
+\usepackage{url}
 \usepackage{xcolor}
-
-\nobibliography*  % used together with bibentry package to allow footnote bibentry citations
 
 \input{acronyms}
 \input{commands}
@@ -192,15 +190,21 @@ Note that the number of parameters of the full model is even larger than for the
 
 \subsubsection{First Layer Window Size}
 \label{sec:scf_first_window}
-\draft{
-What role does the size of the first layer play? Is it important to cover one pitch period (max. fundamental period)?
-By default, I use a window size of \ms{16}.
-Experiments on using different window sizes in \refTab{table:features_window_size} suggest that a larger window size has a detrimental effect while going from the default \ms{16} down to \ms{10} shows a marginal improvement.
-}
+Furthermore, the effect of the first layer's window size is studied and the results are shown in \refTab{table:features_window_size}.
+They suggest that smaller window sizes than in \cite{tuske2018:waveform} perform better in the context of a \conformer \gls{CTC} model.
+In particular, it does not seem to be necessary to cover one full \draft{pitch period (max. fundamental period) \TODO{check detailed explanation} which is around \ms{16}}.
+Instead, the best result is achieved with a window size of \ms{10}.
 Note that all experiments in \refSec{sec:scf_size} use a window size of \ms{16}.
 \input{tables/features_window_size}
 
 \subsection{\wvtwo Pre-Training}
+The main appeal of the \wvtwo framework is the ability to pre-train the model on unlabeled audio data.
+\cite{facebook2020wav2vec2} even reports relative \gls{WER} improvements of about 10\% on the \textit{other} subsets for their experiments on LibriSpeech when pre-training on the same data as used in supervised training compared to pure supervised training from scratch.
+Here, we study this effect for the \fe only by using the parameters of an \fe pre-trained on LibriSpeech\footnote{\raggedright\url{https://github.com/facebookresearch/fairseq/blob/main/examples/wav2vec/README.md}}, so no external data is added.
+During the supervised training, the \fe weights can be further trained or kept frozen.
+As shown in \refTab{table:features_pretraining}, no positive effect can be observed here.
+In fact, using a frozen pre-trained \fe shows clearly worse performance than training the \fe purely supervised from scratch.
+We hypothesize that the pre-training mainly benefits the \transformer encoder and not the \fe while the mismatch between the \transformer encoder in pre-training and \conformer encoder in our setup could also pose a challenge for the case that the \fe is frozen.
 \input{tables/features_pretraining}
 
 \subsection{Frequency Response of Learned Filters}
