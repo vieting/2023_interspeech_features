@@ -4,14 +4,15 @@
 \centering
 \caption{Comparison of different feature extraction methods for a CTC model on Librispeech.}
 \label{table:features_general}
-\begin{tabular}{|c|c|c|c|S|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-\multicolumn{2}{|c|}{Feature Extractor} & \multicolumn{2}{c|}{\#Params} &       {WER} \\\hline
-                                   Type &           Name &                         Total &   FE & {dev-other} \\\hline\hline
-                                  Fixed & Mel Filterbank &                          None & None &         6.9 \\\cline{2-5}
-                                        &      Gammatone &                         73.7M &  32k &         7.1 \\\hline
-                                     NN &             SC &                         85.2M &  40k &         7.1 \\\cline{2-5}
-                                        &    wav2vec 2.0 &                         89.5M & 4.1M &         6.8 \\
+\multicolumn{2}{|c|}{Feature Extractor} & \multicolumn{2}{c|}{\#Params} & \multicolumn{4}{c|}{{WER}} \\\cline{5-8}
+                 \multicolumn{2}{|c|}{} &         \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{{dev}} & \multicolumn{2}{c|}{{test}} \\\hline
+                                   Type &           Name &                         Total &   FE &                    {clean} & other &                     {clean} & other \\\hline\hline
+                                  Fixed & Mel Filterbank &                               &      &                            &   6.9 &                             &       \\\cline{2-8}
+                                        &      Gammatone &                         73.7M &  32k &                            &   7.1 &                             &       \\\hline
+                                     NN &             SC &                         85.2M &  40k &                            &   7.1 &                             &       \\\cline{2-8}
+                                        &    wav2vec 2.0 &                         89.5M & 4.1M &                            &   6.8 &                             &       \\
 \hline
 \end{tabular}
 
