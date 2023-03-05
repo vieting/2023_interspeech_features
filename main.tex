@@ -160,7 +160,8 @@ Each model is trained on a single \gls{GPU}.
 
 \section{Results}
 The results, namely the \glspl{WER} on the LibriSpeech \textit{dev} and \textit{test} sets, for the different \fes are shown in \refTab{table:features_general}.
-We can observe that all are within a close range.
+The baseline performance using Gammatone features is improved compared to \cite{zhou2022efficient} by disabling gradient noise and re-tuning the peak learning rate.
+We can observe that all \fes are within a close range.
 The \gls{SC} features slightly outperform the Gammatone baseline, while log Mel features are again marginally better and the \wvtwo \fe yields the best results.
 This demonstrates that learnable neural \fes are competitive with hand-designed methods in a purely supervised setup with 960h of training data.
 However, a clear advantage of these techniques cannot be deduced from the experimental results.
