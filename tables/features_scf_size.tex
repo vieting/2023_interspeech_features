@@ -4,16 +4,17 @@
 \centering
 \caption{Comparison of different inner dimensions for learnable \acrfull{SC} feature extraction.}
 \label{table:features_scf_size}
-\begin{tabular}{|c|c|c|c|S|}
+\begin{tabular}{|c|c|c|c|S|c|S|c|}
 \hline
- \#Waveform & \#Temp. Integr. & \multicolumn{2}{c|}{\#Params} & {WER} \\\cline{3-4}
-Filterbanks &         Kernels &                         Total &  FE &       \\\hline\hline
-          5 &             100 &                         81.1M & 27k &   7.1 \\\cline{2-5}
-            &             150 &                         85.2M & 40k &   7.1 \\\cline{2-5}
-            &             200 &                         89.3M & 53k &   7.1 \\\cline{2-5}
-            &             250 &                         93.4M & 67k &   7.3 \\\hline
-          6 &             150 &                         87.7M & 40k &   7.3 \\\cline{1-1}\cline{3-5}
-          7 &                 &                         90.1M & 41k &   7.1 \\
+ \#Waveform & \#Temp. & \multicolumn{2}{c|}{\#Params} & \multicolumn{4}{c|}{{WER}} \\\cline{5-8}
+Filterbanks & Integr. &         \multicolumn{2}{c|}{} & \multicolumn{2}{c|}{{dev}} & \multicolumn{2}{c|}{{test}} \\\cline{3-8}
+            & Kernels &                         Total &  FE &                    {clean} & other &                     {clean} & other \\\hline\hline
+          5 &     100 &                         81.1M & 27k &                            &   7.1 &                             &       \\\cline{2-8}
+            &     150 &                         85.2M & 40k &                            &   7.1 &                             &       \\\cline{2-8}
+            &     200 &                         89.3M & 53k &                            &   7.1 &                             &       \\\cline{2-8}
+            &     250 &                         93.4M & 67k &                            &   7.3 &                             &       \\\hline
+          6 &     150 &                         87.7M & 40k &                            &   7.3 &                             &       \\\cline{1-1}\cline{3-8}
+          7 &         &                         90.1M & 41k &                            &   7.1 &                             &       \\
 \hline
 \end{tabular}
 

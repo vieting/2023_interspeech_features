@@ -4,21 +4,23 @@
 \centering
 \caption{Studying the effect of the wav2vec 2.0 feature extractor's width and depth.}
 \label{table:features_w2v_size}
-\begin{tabular}{|c|c|c|S|}
+\begin{tabular}{|c|c|c|c|c|S|c|}
 \hline
-\#Layers & Dim & \#Params FE & {WER} \\\hline\hline
-       6 & 512 &        4.1M &   6.8 \\\cline{2-4}
-         & 256 &        1.1M &   7.1 \\\cline{2-4}
-         & 128 &        330k &   7.2 \\\cline{2-4}
-         &  64 &        108k &   7.4 \\\hline
-       5 & 512 &        4.3M &   7.1 \\\cline{2-4}
-         &  64 &        112k &   7.4 \\\hline
-       4 & 512 &        4.3M &   7.0 \\\cline{2-4}
-         &  64 &        112k &   7.2 \\\hline
-       3 & 512 &        3.6M &   6.9 \\\cline{2-4}
-         &  64 &        101k &   7.4 \\\hline
-       2 & 512 &        5.6M &   7.1 \\\cline{2-4}
-         &  64 &        134k &   7.6 \\
+\#Layers & Dim & \#Params FE & \multicolumn{4}{c|}{{WER}} \\\cline{4-7}
+         &     &             & \multicolumn{2}{c|}{{dev}} & \multicolumn{2}{c|}{{test}} \\\cline{4-7}
+         &     &             &                    {clean} & other &                     {clean} & other \\\hline\hline
+       6 & 512 &        4.1M &                            &   6.8 &                             &       \\\cline{2-7}
+         & 256 &        1.1M &                            &   7.1 &                             &       \\\cline{2-7}
+         & 128 &        330k &                            &   7.2 &                             &       \\\cline{2-7}
+         &  64 &        108k &                            &   7.4 &                             &       \\\hline
+       5 & 512 &        4.3M &                            &   7.1 &                             &       \\\cline{2-7}
+         &  64 &        112k &                            &   7.4 &                             &       \\\hline
+       4 & 512 &        4.3M &                            &   7.0 &                             &       \\\cline{2-7}
+         &  64 &        112k &                            &   7.2 &                             &       \\\hline
+       3 & 512 &        3.6M &                            &   6.9 &                             &       \\\cline{2-7}
+         &  64 &        101k &                            &   7.4 &                             &       \\\hline
+       2 & 512 &        5.6M &                            &   7.1 &                             &       \\\cline{2-7}
+         &  64 &        134k &                            &   7.6 &                             &       \\
 \hline
 \end{tabular}
 

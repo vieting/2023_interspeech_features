@@ -8,9 +8,9 @@ else
 fi
 
 python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet general --wer_cols E F G H
-python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet pretraining --wer_cols C
-python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet window_size --wer_cols C
-python ${EXCEL2LATEX} --file_in features.xlsx --vertical_merge --sheet scf_size --wer_cols E
-python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet w2v_size --wer_cols D
-python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet w2v_proj --wer_cols C
+python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet pretraining --wer_cols C D E F
+python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet window_size --wer_cols C D E F
+python ${EXCEL2LATEX} --file_in features.xlsx --vertical_merge --sheet scf_size --wer_cols E F G H
+python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet w2v_size --wer_cols D E F G
+python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet w2v_proj --wer_cols C D E F
 

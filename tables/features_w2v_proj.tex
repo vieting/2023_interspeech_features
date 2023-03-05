@@ -4,11 +4,13 @@
 \centering
 \caption{Studying the effect of the final projection in the wav2vec 2.0 feature extractor.}
 \label{table:features_w2v_proj}
-\begin{tabular}{|c|c|S|}
+\begin{tabular}{|c|c|S|c|S|c|}
 \hline
-Proj. & \#Params FE & {WER} \\\hline\hline
-   No &        3.7M &   7.0 \\\hline
-  Yes &        4.1M &   6.8 \\
+Proj. & \#Params FE & \multicolumn{4}{c|}{{WER}} \\\cline{3-6}
+      &             & \multicolumn{2}{c|}{{dev}} & \multicolumn{2}{c|}{{test}} \\\cline{3-6}
+      &             &                    {clean} & other &                     {clean} & other \\\hline\hline
+   No &        3.7M &                            &   7.0 &                             &       \\\hline
+  Yes &        4.1M &                            &   6.8 &                             &       \\
 \hline
 \end{tabular}
 
