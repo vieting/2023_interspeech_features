@@ -15,6 +15,7 @@ build_tables:
 	cd tables/; ./create_tables.sh
 
 move_figures:
+	sed -i 's/sffamily/rmfamily/g' *.pgf
 	sed -i 's/\([a-z0-9_\-]*.png\)/figures\/\1/g' *.pgf
 	mv *.png figures/
 	mv *.pgf figures/
