@@ -4,16 +4,16 @@
 \centering
 \caption{Comparison of different sizes for the layer which operates directly on the waveform in the learnable \acrfull{SC} feature extraction.}
 \label{table:features_window_size}
-\begin{tabular}{|c|c|c|c|S|c|}
+\begin{tabular}{|c|c|S|c|S|c|}
 \hline
 \multicolumn{2}{|c|}{Window Size} & \multicolumn{4}{c|}{{WER [\%]}} \\\cline{3-6}
            \multicolumn{2}{|c|}{} &      \multicolumn{2}{c|}{{dev}} & \multicolumn{2}{c|}{{test}} \\\hline
                        in samples & in \si{\milli\second} &                         {clean} & other &                     {clean} & other \\\hline\hline
-                               64 &                     4 &                                 &   7.2 &                             &       \\\hline
-                              128 &                     8 &                                 &   7.1 &                             &       \\\hline
-                              160 &                    10 &                                 &   7.0 &                             &       \\\hline
-                              256 &                    16 &                                 &   7.1 &                             &       \\\hline
-                              400 &                    25 &                                 &   7.3 &                             &       \\
+                               64 &                     4 &                             3.0 &   7.2 &                             &       \\\hline
+                              128 &                     8 &                             3.0 &   7.1 &                             &       \\\hline
+                              160 &                    10 &                             2.9 &   7.0 &                             &   7.6 \\\hline
+                              256 &                    16 &                             3.0 &   7.1 &                             &   7.7 \\\hline
+                              400 &                    25 &                             2.9 &   7.3 &                             &       \\
 \hline
 \end{tabular}
 
