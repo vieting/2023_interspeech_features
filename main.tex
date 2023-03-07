@@ -40,17 +40,19 @@ Typically, this \fe is seen as part of the overall architecture, but this work i
 It is used as a replacement for classical feature extraction methods in a \gls{CTC} setup and compared to an alternative neural \fe approach.
 Finally, we analyze the learned representations of both neural \fes.
 \end{abstract}
-\noindent\textbf{Index Terms}: speech recognition, feature extraction, raw waveform modeling
+\noindent\textbf{Index Terms}: speech recognition, feature extraction, raw waveform modeling, wav2vec 2.0
 
+% reset glossaries
+\glsresetall
 
 \section{Introduction}
-\glspl{AM} for \gls{ASR} traditionally makes use of hand-designed feature extraction methods like log Mel filterbank features \addref or Gammatone features \cite{schlueter:icassp07}.
+\glspl{AM} for \gls{ASR} traditionally makes use of hand-designed feature extraction methods like log Mel filterbank features or Gammatone features \cite{schlueter:icassp07}.
 These techniques are motivated by insights into the properties of the human auditory system.
 However, their fixed design inevitably leads to information loss during the feature extraction.
 
 This issue can be addressed by neural \fes.
 Since their parameters are learned during training, these \fes can adapt to the need of \glspl{AM} and the loss of particularly helpful information may be avoided.
-A number of works have been proposed in this direction, often using convolutional \glspl{NN} \addref but also applying parametrized functions \cite{ravanelli2018sincnet} and other architectures \cite{sainath2015cldnn}.
+A number of works have been proposed in this direction, often using convolutional \glspl{NN} \cite{palaz2015convolutional, golik15:cnn, tuske2018:waveform} but also applying parametrized functions \cite{ravanelli2018sincnet} and other architectures \cite{sainath2015cldnn}.
 
 Recently, the \wvtwo framework \cite{facebook2020wav2vec2} has received large attention.
 It is mainly known for its contrastive self-supervised pre-training, which allows to pre-train a model on large amounts of unlabeled audio data.
@@ -60,37 +62,41 @@ While the context network with multiple \transformer blocks constitutes the majo
 
 While the \wvtwo \fe is similar to other neural feature extraction methods, it is not yet closely studied in the literature.
 \cite{choi2022w2v2fe} studies the feature encoder by feeding synthesized sine waves.
-The authors observe that enough temporal detail is obtained and information about fundamental frequencies is represented in the model's output.
-In particular, they claim that the frequencies are distributed linearly over the Hertz scale, unlike perceptually motivated scales like the Mel scale or the Greenwood function for Gammatone features.
-\draft{
-Other works that analyze \wvtwo models rather focus on the large \transformer part of the network which operates at a higher level of abstraction \cite{livescu2021wav2vec_analysis}.
-\TODO{updated version and add more papers (references in Choi et al. or Livescu et al.}
-}
+Other works that analyze \wvtwo models rather focus on the large \transformer part of the network which operates at a higher level of abstraction \cite{livescu2021wav2vec_analysis, fan21wvspeakerid, li2023exploration, dieck2022wav2vec}.
 
 \draft{
 Highlight contributions of this paper.
 }
 
 \section{Related work}
-\draft{
-Works on raw waveform acoustic modeling.
-Think about how to properly reference \cite{vieting2021waveform} without disclosing author information.
+This paper takes up the line of research that applies learnable feature extraction front-ends for \gls{ASR} \cite{palaz2015convolutional, golik15:cnn, tuske2018:waveform, ravanelli2018sincnet, sainath2015cldnn}.
+In particular, different neural \fes are compared to traditional feature extraction methods.
+We choose to investigate the supervised convolutional \fe from \cite{tuske2018:waveform}, that was also studied in \cite{vieting2021waveform}.
+Furthermore, the feature extractor of \wvtwo \cite{facebook2020wav2vec2} is used as a learnable front-end for supervised \gls{ASR} training.
 
-Different \wv papers \cite{facebook2019wav2vec, facebook2019vqwav2vec, facebook2020wav2vec2, facebook2020xlsr}.
-Describe differences between the approaches.
+The \wv framework has been established in a series of related papers \cite{facebook2019wav2vec, facebook2019vqwav2vec, facebook2020wav2vec2, facebook2020xlsr}.
 Besides modifications of the self-supervised training criteria -- moving from the future time step prediction in \cite{facebook2019wav2vec} to masked time step prediction -- and incorporating quantization modules, also the architecture has been revised.
-Fully convolutional vs. \transformer.
-Differences in \fe.
+While \cite{facebook2019wav2vec} uses a fully convolutional architecture, \cite{facebook2020wav2vec2} uses a large stack of \transformer blocks to contextualize the convolutional representations.
+%
+Also the \fe itself has been adjusted.
+%\cite{facebook2019wav2vec} uses 5 layers with kernel sizes (10, 8, 4, 4, 4) and strides which are always exactly half the kernel size.
+%All have 512 channels, a group normalization layer with a single group and a \relu nonlinearity.
+%\cite{facebook2020wav2vec2} uses seven layers with kernel sizes (10, 3, 3, 3, 3, 2, 2), strides (5, 2, 2, 2, 2, 2, 2), and a GELU activation function.
+%The first layer applies group normalization and finally, layer normalization and a linear projection are added.
+\cite{facebook2019wav2vec} uses 5 layers, a group normalization with a single group and a \relu nonlinearity.
+In contrast, 7 layers with group normalization in the first layer and a GELU activation function are used in \cite{facebook2020wav2vec2}.
+Additionally, layer normalization and a linear projection are added after the convolutional layers.
 
-\cite{facebook2019wav2vec} uses 5 layers with kernel sizes (10, 8, 4, 4, 4) and strides which are always exactly half the kernel size.
-All have 512 channels, a group normalization layer with a single group and a \relu nonlinearity.
-\cite{facebook2020wav2vec2} uses seven layers with kernel sizes (10, 3, 3, 3, 3, 2, 2), strides (5, 2, 2, 2, 2, 2, 2), and a GELU activation function.
-The first layer applies group normalization and finally, layer normalization and a linear projection are added.
+While most works analyzing the \wvtwo model focus on the \transformer part, there are papers which study the \fe as well.
+The authors of \cite{choi2022w2v2fe} feed synthesized sine waves to a pre-trained model and observe that enough temporal detail is obtained and information about fundamental frequencies is represented in the model's output.
+In particular, they claim that the frequencies are distributed linearly over the Hertz scale, unlike perceptually motivated scales like the Mel scale or the Greenwood function for Gammatone features.
+\cite{livescu2021wav2vec_analysis} states that the learned representations of the \fe are highly correlated with Mel spectrogram features as was determined by the \gls{CCA}, where the correlation is at a high plateau for \fe layers 3 to 7.
+This observation is supported by experimental evidence in \cite{dieck2022wav2vec}.
 
-\cite{asapp2022performance} investigates different settings for the \wvtwo \fe and shows that the required computation can be significantly reduced while maintaining \TODO{similar} performance.
-However, this is always done in the whole \wvtwo framework.
-\TODO{Highlight differences to this paper.}
-}
+\cite{asapp2022performance} investigates different settings for the \wvtwo \fe and shows that the required computation can be significantly reduced while maintaining similar performance.
+Furthermore, reducing the \fe's size in favor of a larger context network shows promising results.
+%In addition, a deeper variant with additional point-wise convolutional layers is proposed which outperforms its wider counterpart using higher inner dimensions.
+However, unlike our work this is always done in the whole \wvtwo framework including pre-training and fine-tuning and no insights into the learned representations are given.
 
 \section{Methods}
 This work compares different \fes' applicability for \gls{ASR}.
@@ -196,8 +202,8 @@ Note that the number of parameters of the full model is even larger than for the
 \label{sec:scf_first_window}
 Furthermore, the effect of the first layer's window size is studied and the results are shown in \refTab{table:features_window_size}.
 They suggest that smaller window sizes than in \cite{tuske2018:waveform} perform better in the context of a \conformer \gls{CTC} model.
-In particular, it does not seem to be necessary to cover one full \draft{pitch period (max. fundamental period) which is around \ms{16} for low voices}. %\TODO{check detailed explanation.}
-Instead, the best result is achieved with a window size of \ms{10}.
+In particular, it does not seem to be necessary to cover one full pitch period which is around \ms{16} for low voices.
+Instead, the best result is achieved with a window size of \ms{10} and even smaller windows still achieve comparable performance.
 Note that all experiments in \refSec{sec:scf_size} use a window size of \ms{16}.
 \input{tables/features_window_size}
 
