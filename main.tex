@@ -135,14 +135,12 @@ The total receptive field of the \gls{SC} features is \ms{9999}.
 
 \subsection{Acoustic Model}
 The \gls{AM} mainly consists of \gls{VGG} \addref blocks for downsampling and 12 \conformer blocks.
+Its configuration mostly follows \cite{zeineldeen2022conformer} and \cite{zhou2022efficient}.
 The \gls{VGG} downsampling uses three 3x3-convolutional layers with 32, 64 and 64 channels, respectively.
 In total, a subsampling factor of 4 in the time dimension is achieved by the strided convolutions so that the \conformer operates on frames with a shift of \SI{40}{\milli\second}.
 The feature dimension is reduced by a factor of 2 due to max pooling and then multiplied by the number of channels in the last convolution resulting in a total increase by factor 32 in our case.
-\draft{
-There is a linear layer and dropout here.
-The \conformer blocks should be described here.
-}
-The configuration follows the setup in \cite{zeineldeen2022robustconformer} \TODO{check!}.
+After a linear projection to a 512-dimensional representation and dropout of 0.1, the 12 \conformer blocks with an inner dimension of 512, swapped convolution and multi-headed self-attention modules and 8 heads are applied.
+
 
 \subsection{Connectionist Temporal Classification}
 We use a \gls{CTC} model for our experiments.
