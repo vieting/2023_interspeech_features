@@ -63,7 +63,8 @@ While the \wvtwo \fe is similar to other neural feature extraction methods, it i
 The authors observe that enough temporal detail is obtained and information about fundamental frequencies is represented in the model's output.
 In particular, they claim that the frequencies are distributed linearly over the Hertz scale, unlike perceptually motivated scales like the Mel scale or the Greenwood function for Gammatone features.
 \draft{
-Other works that analyze \wvtwo models rather focus on the large \transformer part of the network which operates at a higher level of abstraction \cite{livescu2021wav2vec_analysis}\TODO{updated version and add more papers (references in Choi et al. or Livescu et al.}.
+Other works that analyze \wvtwo models rather focus on the large \transformer part of the network which operates at a higher level of abstraction \cite{livescu2021wav2vec_analysis}.
+\TODO{updated version and add more papers (references in Choi et al. or Livescu et al.}
 }
 
 \draft{
@@ -87,7 +88,8 @@ All have 512 channels, a group normalization layer with a single group and a \re
 The first layer applies group normalization and finally, layer normalization and a linear projection are added.
 
 \cite{asapp2022performance} investigates different settings for the \wvtwo \fe and shows that the required computation can be significantly reduced while maintaining \TODO{similar} performance.
-However, this is always done in the whole \wvtwo framework and not \TODO{what is different to us?}
+However, this is always done in the whole \wvtwo framework.
+\TODO{Highlight differences to this paper.}
 }
 
 \section{Methods}
@@ -103,16 +105,16 @@ To compute the log Mel filterbank features, first the \gls{STFT} of the waveform
 We keep the square of the magnitude and perform Mel warping to obtain a 80-dim vector.
 Finally, $\log_{10}$ and normalization are applied.
 
-Gammatone features apply a gammatone filterbank to the pre-emphasized speech signal, perform temporal integration over each channel using a low pass filter, i.e., the Hanning window with a size of \ms{25} and a shift of \ms{10}, compress using the $10^{th}$ root and finally compute the \gls{DCT} of the values \cite{schlueter:icassp07}.
+Gammatone features apply a Gammatone filterbank to the pre-emphasized speech signal, perform temporal integration over each channel using a low pass filter, i.e., the Hanning window with a size of \ms{25} and a shift of \ms{10}, compress using the $10^{th}$ root and finally compute the \gls{DCT} of the values \cite{schlueter:icassp07}.
 Further, the the resulting 50-dim features are normalized.
 
 \subsubsection{\wvtwo Feature Extractor}
 The \gls{FE} of the \wvtwo model \cite{facebook2020wav2vec2} mainly consists of 7 convolutional layers.
 They are configured with kernel sizes (10, 3, 3, 3, 3, 2, 2), strides (5, 2, 2, 2, 2, 2, 2), and a GELU activation function.
 The first layer applies group normalization and finally, layer normalization and a linear projection is added.
-The total receptive field of the \wvtwo \fe is \ms{9999} and the shift between consecutive frames is \ms{20}.
+The total receptive field of the \wvtwo \fe is \ms{25} and the shift between consecutive frames is \ms{20}.
 Since the other \fes operate at a shift of \ms{10} and the \wvtwo \fe is built in a modular way, we remove the last layer with a stride of 2 in order to achieve features at the same frame rate.
-This reduces the total receptive field to \ms{9999}.
+This reduces the total receptive field to \ms{15}.
 
 \subsubsection{Supervised Convolutional Features}
 As an alternative comparable neural feature extraction method, we use \gls{SC} features \cite{tuske2018:waveform, vieting2021waveform}.
@@ -139,29 +141,27 @@ The configuration follows the setup in \cite{zeineldeen2022robustconformer} \TOD
 \subsection{Connectionist Temporal Classification}
 We use a \gls{CTC} model for our experiments.
 It follows the setup described for the \gls{CTC} model in \cite{zhou2022efficient}.
-\TODO{Cite Wei's paper and add more description of the CTC model.}
+\TODO{Add more description of the CTC model.}
 All models are trained in a purely supervised fashion using the \gls{CTC} objective unless explicitly stated otherwise.
-A 4-gram \gls{LM} is used and integrated using shallow fusion \cite{gulcehre2015shallow} during decoding.
-\TODO{Check LM usage.}
+The official LibriSpeech 4-gram \gls{LM} is used and integrated using shallow fusion \cite{gulcehre2015shallow} during decoding.
 
 \section{Experimental Setup}
 \subsection{Data}
 We conduct experiments on the 960h LibriSpeech corpus \cite{panayotov2015librispeech}, which consists of read English speech.
 For the experiments using a pre-trained \wvtwo \fe, the same 960h were used in pre-training.
-\draft{The \gls{LM} was trained on the default LibriSpeech \gls{LM} training data which includes the transcriptions of the training set along with the additional
-800M-word text-only data.}
+The \gls{LM} was trained on the default LibriSpeech \gls{LM} training data which includes the transcriptions of the training set along with the additional 800M-word text only data.
 The evaluation is done on the standard \devclean, \devother, \testclean and \testother sets.
 
 \subsection{Training Details}
-\draft{We follow the setup in \TODO{Wei's paper} \addref.}
+We generally follow the setup in \cite{zhou2022efficient}.
 The batch size is 640k samples, which corresponds to \SI{40}{\second} of speech waveform and the gradients are accumulated over 3 steps.
-The \TODO{NAdam} optimizer uses a \gls{OCLR} schedule with a peak learning rate of \TODO{X} as described in .
+The NAdam optimizer uses a \gls{OCLR} schedule with a peak learning rate of $3\cdot 10^{-4}$.
+In contrast to \cite{zhou2022efficient}, no gradient noise is applied.
 Each model is trained on a single \gls{GPU}.
-\TODO{What about chunking? More details needed?}
 
 \section{Results}
 The results, namely the \glspl{WER} on the LibriSpeech \textit{dev} and \textit{test} sets, for the different \fes are shown in \refTab{table:features_general}.
-The baseline performance using Gammatone features is improved compared to \cite{zhou2022efficient} by disabling gradient noise and re-tuning the peak learning rate.
+The baseline performance using Gammatone features is improved compared to \cite{zhou2022efficient} mainly by disabling gradient noise and re-tuning the peak learning rate.
 We can observe that all \fes are within a close range.
 The \gls{SC} features slightly outperform the Gammatone baseline, while log Mel features are again marginally better and the \wvtwo \fe yields the best results.
 This demonstrates that learnable neural \fes are competitive with hand-designed methods in a purely supervised setup with 960h of training data.
@@ -169,7 +169,7 @@ However, a clear advantage of these techniques cannot be deduced from the experi
 \input{tables/features_general}
 
 \subsection{Model Sizes}
-It is striking that the \wv2 \fe uses 100x more parameters than the \gls{SC} architecture.
+It is striking that the \wv2 \fe uses two orders of magnitude more parameters than the \gls{SC} architecture.
 We therefore study the contribution of its components in \refSec{sec:w2v_components} and increase the number of parameters in the \gls{SC} model in \refSec{sec:scf_size}.
 Additionally, the size of the first window operating on the waveform is analyzed in \refSec{sec:scf_first_window}.
 
@@ -181,7 +181,7 @@ The kernel sizes and strides were chosen as (10, 3, 3, 3, 3, 2), (5, 2, 2, 2, 2,
 The results show that a larger inner dimension leads to a better performance
 In contrast, no major effect can be observed regarding the number of layers.
 We also tried a variant with only one layer using kernel size 320 and stride 160 which did not converge.
-The final projection, which comprises about \TODO{400k} parameters, additionally improves the performance as shown in \refTab{table:features_w2v_proj}.
+The final projection, which comprises about 394k parameters, additionally improves the performance as shown in \refTab{table:features_w2v_proj}.
 \input{tables/features_w2v_size}
 \input{tables/features_w2v_proj}
 
@@ -196,7 +196,7 @@ Note that the number of parameters of the full model is even larger than for the
 \label{sec:scf_first_window}
 Furthermore, the effect of the first layer's window size is studied and the results are shown in \refTab{table:features_window_size}.
 They suggest that smaller window sizes than in \cite{tuske2018:waveform} perform better in the context of a \conformer \gls{CTC} model.
-In particular, it does not seem to be necessary to cover one full \draft{pitch period (max. fundamental period) \TODO{check detailed explanation} which is around \ms{16}}.
+In particular, it does not seem to be necessary to cover one full \draft{pitch period (max. fundamental period) which is around \ms{16} for low voices}. %\TODO{check detailed explanation.}
 Instead, the best result is achieved with a window size of \ms{10}.
 Note that all experiments in \refSec{sec:scf_size} use a window size of \ms{16}.
 \input{tables/features_window_size}
