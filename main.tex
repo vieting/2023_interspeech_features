@@ -206,6 +206,7 @@ Note that all experiments in \refSec{sec:scf_size} use a window size of \ms{16}.
 \input{tables/features_window_size}
 
 \subsection{\wvtwo Pre-Training}
+\input{figures/first_layer}
 The main appeal of the \wvtwo framework is the ability to pre-train the model on unlabeled audio data.
 \cite{facebook2020wav2vec2} even reports relative \gls{WER} improvements of about 10\% on the \textit{other} subsets for their experiments on LibriSpeech when pre-training on the same data as used in supervised training compared to pure supervised training from scratch.
 Here, we study this effect for the \fe only by using the parameters of an \fe pre-trained on LibriSpeech\footnote{\raggedright\url{https://github.com/facebookresearch/fairseq/blob/main/examples/wav2vec/README.md}}, so no external data is added.
@@ -216,7 +217,6 @@ We hypothesize that the pre-training mainly benefits the \transformer encoder an
 \input{tables/features_pretraining}
 
 \subsection{Frequency Response of Learned Filters}
-\input{figures/first_layer}
 Finally, we analyze the learned filters of the neural \fes.
 This is done by plotting the frequency response of the filters in the first layer which operates on the raw waveform.
 As the order of learned filters in a convolutional layer is arbitrary, we sort the filters by the peak value of the frequency response.
