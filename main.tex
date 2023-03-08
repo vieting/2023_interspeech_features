@@ -196,6 +196,8 @@ It can be observed that these configurations perform similarly to the 6 layer 51
 The final projection, which comprises about 394k parameters, additionally improves the performance slightly on \devother while degrading minimally on the \textit{test} sets as shown in \refTab{table:features_w2v_proj}.
 \input{tables/features_w2v_size}
 \input{tables/features_w2v_proj}
+% has to be here to be shown on page 4
+\input{figures/first_layer}
 
 \subsubsection{Larger Supervised Convolutional Architecture}
 \label{sec:scf_size}
@@ -214,7 +216,6 @@ Note that all experiments in \refSec{sec:scf_size} use a window size of \ms{16}.
 \input{tables/features_window_size}
 
 \subsection{\wvtwo Pre-Training}
-\input{figures/first_layer}
 The main appeal of the \wvtwo framework is the ability to pre-train the model on unlabeled audio data.
 \cite{facebook2020wav2vec2} even reports relative \gls{WER} improvements of about 10\% on the \textit{other} subsets for their experiments on LibriSpeech when pre-training on the same data as used in supervised training compared to pure supervised training from scratch.
 Here, we study this effect for the \fe only by using the parameters of an \fe pre-trained on LibriSpeech\footnote{\raggedright\url{https://github.com/facebookresearch/fairseq/blob/main/examples/wav2vec/README.md}}, so no external data is added.
@@ -226,14 +227,14 @@ We hypothesize that the pre-training mainly benefits the \transformer encoder an
 
 \subsection{Frequency Response of Learned Filters}
 Finally, we analyze the learned filters of the neural \fes.
-This is done by plotting the frequency response of the filters in the first layer which operates on the raw waveform.
+First, the frequency response of the filters in the first layer which operates on the raw waveform is plotted.
 As the order of learned filters in a convolutional layer is arbitrary, we sort the filters by the peak value of the frequency response.
-The plots are depicted in \refFig{fig:first_layer}.
-The color range is shared between all subplots.
+The plots are depicted in \refFig{fig:first_layer}\,(a)-(d), which share the same color range.
 
-The well known distribution of the Gammatone filters is given in \refFig{fig:first_layer}\,(a).
+The well known distribution of the Gammatone filters is given in \refFig{fig:first_layer}\,(a) as a reference.
 \refFig{fig:first_layer}\,(b) shows the frequency response of the learned \gls{SC} filters.
 In line with \cite{tuske2018:waveform}, bandpass filters with a non-linear distribution of center frequencies are learned.
+This confirms, that these filters are also preferred by more advanced neural back-ends like self-attention-based like \conformer which are superior in the exploitation of context information compared to simpler neural back-ends e.g. in \cite{tuske2014raw}.
 The distribution resembles the Gammatone filterbank and with higher center frequencies, the pass band is also wider.
 However, the stopband attenuation is clearly weaker.
 
