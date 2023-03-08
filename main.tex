@@ -25,7 +25,7 @@
 \title{Comparative Analysis of the wav2vec 2.0 Feature Extractor}
 \name{Peter Vieting$^{1}$, Ralf Schl\"uter$^{1,2}$, Hermann Ney$^{1,2}$}
 \address{
-  $^1$RWTH Aachen University, Germany\\
+  $^1$Machine Learning and Human Language Technology,\\Computer Science Department, RWTH Aachen University, Germany\\
   $^2$AppTek GmbH, Germany}
 \email{\{vieting,schlueter,ney\}@cs.rwth-aachen.de}
 
@@ -39,6 +39,7 @@ Raw waveform modeling is an interesting research topic for \gls{ASR}.
 Typically, this \fe is seen as part of the overall architecture, but this work investigates this component specifically.
 It is used as a replacement for classical feature extraction methods in a \gls{CTC} setup and compared to an alternative neural \fe approach.
 Finally, we analyze the learned representations of both neural \fes.
+\TODO{Revise abstract and include results.}
 \end{abstract}
 \noindent\textbf{Index Terms}: speech recognition, feature extraction, raw waveform modeling, wav2vec 2.0
 
@@ -58,10 +59,10 @@ Recently, the \wvtwo framework \cite{facebook2020wav2vec2} has received large at
 It is mainly known for its contrastive self-supervised pre-training, which allows to pre-train a model on large amounts of unlabeled audio data.
 Subsequently, it can be fine-tuned for a specific downstream task at hand.
 While the context network with multiple \transformer blocks constitutes the major part of the architecture, the \wvtwo model also makes use of a convolutional feature encoder.
-\TODO{feature encoder vs. \fe here.}
+Feature encoder \cite{facebook2020wav2vec2, facebook2020xlsr} and feature extractor \cite{asapp2022performance, vyas2022ondemand} are both common terms in the literature referring to the same part of the model and for consistency, we only use the term \acrfull{FE} here as it is more in line with other works on neural front-ends.
 
 While the \wvtwo \fe is similar to other neural feature extraction methods, it is not yet closely studied in the literature.
-\cite{choi2022w2v2fe} studies the feature encoder by feeding synthesized sine waves.
+\cite{choi2022w2v2fe} studies the \fe by feeding synthesized sine waves.
 Other works that analyze \wvtwo models rather focus on the large \transformer part of the network which operates at a higher level of abstraction \cite{livescu2021wav2vec_analysis, fan21wvspeakerid, li2023exploration, dieck2022wav2vec}.
 
 \draft{
@@ -95,7 +96,7 @@ This observation is supported by experimental evidence in \cite{dieck2022wav2vec
 
 \cite{asapp2022performance} investigates different settings for the \wvtwo \fe and shows that the required computation can be significantly reduced while maintaining similar performance.
 Furthermore, reducing the \fe's size in favor of a larger context network shows promising results.
-%In addition, a deeper variant with additional point-wise convolutional layers is proposed which outperforms its wider counterpart using higher inner dimensions.
+In addition, a deeper variant with additional point-wise convolutional layers is proposed which outperforms its wider counterpart using higher inner dimensions.
 However, unlike our work this is always done in the whole \wvtwo framework including pre-training and fine-tuning and no insights into the learned representations are given.
 
 \section{Methods}
@@ -159,7 +160,7 @@ The evaluation is done on the standard \devclean, \devother, \testclean and \tes
 \subsection{Training Details}
 We generally follow the setup in \cite{zhou2022efficient}.
 The batch size is 640k samples, which corresponds to \SI{40}{\second} of speech waveform and the gradients are accumulated over 3 steps.
-The NAdam optimizer uses a \gls{OCLR} schedule with a peak learning rate of $3\cdot 10^{-4}$.
+The NAdam optimizer uses a \gls{OCLR} schedule with a peak learning rate of $3\cdot 10^{-4}$ and we train the model for 20 epochs.
 In contrast to \cite{zhou2022efficient}, no gradient noise is applied.
 Each model is trained on a single \gls{GPU}.
 
@@ -170,10 +171,11 @@ We can observe that all \fes are within a close range.
 The \gls{SC} features slightly outperform the Gammatone baseline, while log Mel features are again marginally better and the \wvtwo \fe yields the best results.
 This demonstrates that learnable neural \fes are competitive with hand-designed methods in a purely supervised setup with 960h of training data.
 However, a clear advantage of these techniques cannot be deduced from the experimental results.
+\TODO{Add params for Mel filterbank and a note on linear layer using much more params for larger feature dim.}
 \input{tables/features_general}
 
 \subsection{Model Sizes}
-It is striking that the \wv2 \fe uses two orders of magnitude more parameters than the \gls{SC} architecture.
+It is striking that the \wvtwo \fe uses two orders of magnitude more parameters than the \gls{SC} architecture.
 We therefore study the contribution of its components in \refSec{sec:w2v_components} and increase the number of parameters in the \gls{SC} model in \refSec{sec:scf_size}.
 Additionally, the size of the first window operating on the waveform is analyzed in \refSec{sec:scf_first_window}.
 
@@ -185,7 +187,13 @@ The kernel sizes and strides were chosen as (10, 3, 3, 3, 3, 2), (5, 2, 2, 2, 2,
 The results show that a larger inner dimension leads to a better performance
 In contrast, no major effect can be observed regarding the number of layers.
 We also tried a variant with only one layer using kernel size 320 and stride 160 which did not converge.
-The final projection, which comprises about 394k parameters, additionally improves the performance as shown in \refTab{table:features_w2v_proj}.
+
+The proposed \fe in \cite{asapp2022performance} uses increasing inner dimensions and we use this approach in the last three lines of \refTab{table:features_w2v_size}.
+The first layer uses a dimension of 64/128 and it is doubled after each layer with an odd index.
+Additionally, we add point-wise convolutional layers after all but the first layer using the same inner dimension as the preceding layer for the last row of the table.
+It can be observed that these configurations perform similarly to the 6 layer 512-dim baseline while reducing the training time by about 21\%, 19\% and 14\%, respectively.
+
+The final projection, which comprises about 394k parameters, additionally improves the performance slightly on \devother while degrading minimally on the \textit{test} sets as shown in \refTab{table:features_w2v_proj}.
 \input{tables/features_w2v_size}
 \input{tables/features_w2v_proj}
 
@@ -248,7 +256,6 @@ This indicates that the properties learned in unsupervised pre-training and supe
 \color{red}
 \section{To Dos/Questions}
 \begin{itemize}
-  \item \wvtwo feature extractor vs. feature encoder
   \item check for arxiv citations
 \end{itemize}
 }
