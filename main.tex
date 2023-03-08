@@ -129,10 +129,10 @@ Similarly, a convolutional filterbank with learnable parameters is applied to th
 As in the case of Gammatones, a temporal integration is performed over each channel.
 However, in this case multiple filters are used for temporal integration allowing for multi-resolutional processing.
 Additionally, these filters are learned during training.
-By default, we set the size of the first filterbank to 256, its strides to 10 and the number of channels to 150.
+By default, we set the size of the first filterbank to 160, its strides to 10 and the number of channels to 150.
 The second convolutional filter applies 5 temporal integration filters with a size of 40 and strides of 16 each.
 Since the output of all 5 filters is stacked, we have a resulting feature dimension of 750.
-The total receptive field of the \gls{SC} features is \ms{9999}.
+The total receptive field of the \gls{SC} features is \ms{40}.
 
 \subsection{Acoustic Model}
 The \gls{AM} mainly consists of \gls{VGG} \addref blocks for downsampling and 12 \conformer blocks.
@@ -171,7 +171,8 @@ We can observe that all \fes are within a close range.
 The \gls{SC} features slightly outperform the Gammatone baseline, while log Mel features are again marginally better and the \wvtwo \fe yields the best results.
 This demonstrates that learnable neural \fes are competitive with hand-designed methods in a purely supervised setup with 960h of training data.
 However, a clear advantage of these techniques cannot be deduced from the experimental results.
-\TODO{Add params for Mel filterbank and a note on linear layer using much more params for larger feature dim.}
+The number of parameters for Gammatone and log Mel features refers to the \gls{FIR} and Mel filterbanks, respectively, that we use in our implementation even if they are not trainable.
+The differences in the total number of parameters are influenced by the size of the \fe, but also of the linear layer before the \conformer which grows large as the feature dimension increases.
 \input{tables/features_general}
 
 \subsection{Model Sizes}
@@ -242,6 +243,7 @@ The distribution for the \wvtwo \fe's first layer in \refFig{fig:first_layer}\,(
 Again, bandpass filters are learned, however, they have a wider passband, their center frequencies are distributed rather linearly and the stopband attenuation is weak.
 Interestingly, the frequency response of the pre-trained \wvtwo \fe in \refFig{fig:first_layer}\,(d) is very similar to \refFig{fig:first_layer}\,(c).
 This indicates that the properties learned in unsupervised pre-training and supervised \gls{CTC} training are similar.
+% for SCF, first 9 filters have peak at 0Hz, for wav2vec 75 filters
 
 \section{Conclusions}
 
