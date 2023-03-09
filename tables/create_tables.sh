@@ -14,3 +14,5 @@ python ${EXCEL2LATEX} --file_in features.xlsx --vertical_merge --sheet scf_size 
 python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet w2v_size --wer_cols D E F G
 python ${EXCEL2LATEX} --file_in features.xlsx --all_lines --vertical_merge --sheet w2v_proj --wer_cols C D E F
 
+sed -i 's/\\end{tabular}/\\end{tabular}\n\\vspace{-0.05cm}/g' features_w2v_size.tex
+
