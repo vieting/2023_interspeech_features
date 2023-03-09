@@ -178,47 +178,43 @@ The number of parameters for Gammatone and log Mel features refers to the \gls{F
 The differences in the total number of parameters are influenced by the size of the \fe, but also of the linear layer before the \conformer which grows large as the feature dimension increases.
 \input{tables/features_general}
 
-\subsection{Model Sizes}
-It is striking that the \wvtwo \fe uses two orders of magnitude more parameters than the \gls{SC} architecture.
-We therefore study the contribution of its components in \refSec{sec:w2v_components} and increase the number of parameters in the \gls{SC} model in \refSec{sec:scf_size}.
-Additionally, the size of the first window operating on the waveform is analyzed in \refSec{sec:scf_first_window}.
-
-\subsubsection{Dissecting the wav2vec 2.0 Feature Extractor}
+\subsection{Dissecting the wav2vec 2.0 Feature Extractor}
 \label{sec:w2v_components}
-To understand where \wvtwo uses the parameters and how much they contribute to the \gls{FE}'s performance, we run it with different configurations.
+It is striking that the \wvtwo \fe uses two orders of magnitude more parameters than the \gls{SC} architecture.
+To understand where \wvtwo uses the them and how much they contribute to the \gls{FE}'s performance, we run it with different configurations.
 The results for different widths and depths are shown in \refTab{table:features_w2v_size}.
 The kernel sizes and strides were chosen as (10, 3, 3, 3, 3, 2), (5, 2, 2, 2, 2, 2) for 6 layers, (10, 6, 3, 3, 3), (5, 4, 2, 2, 2) for 5 layers, (10, 6, 6, 3), (5, 4, 4, 2) for 4 layers, (20, 6, 6), (10, 4, 4) for 3 layers and (32, 20), (16, 10) for 2 layers.
 The results show that decreasing the inner dimension deteriorates the performance, however, a larger dimension does not improve over the 512-dim baseline.
 In contrast, no major effect can be observed regarding the number of layers.
 We also tried a variant with only one layer using kernel size 320 and stride 160 which did not converge.
+\input{tables/features_w2v_size}
+Removing the final projection with about 394k parameters has no significant impact.
+%The final projection, which comprises about 394k parameters, additionally improves the performance slightly on \devother while degrading minimally on the \textit{test} sets as shown in \refTab{table:features_w2v_proj}.
+%\input{tables/features_w2v_proj}
 
 The proposed \fe in \cite{asapp2022performance} uses increasing inner dimensions and we use this approach in the last three lines of \refTab{table:features_w2v_size}.
 The first layer uses a dimension of 64/128 and it is doubled after each layer with an odd index.
 Additionally, we add point-wise convolutional layers after all but the first layer using the same inner dimension as the preceding layer for the last row of the table.
 It can be observed that these configurations perform similarly to the 6 layer 512-dim baseline while reducing the training time by about 21\%, 19\% and 14\%, respectively.
 Note that the \gls{SC} features perform similar to the variant with dimension 64-512 with again around 10\% shorter training time.
-
-The final projection, which comprises about 394k parameters, additionally improves the performance slightly on \devother while degrading minimally on the \textit{test} sets as shown in \refTab{table:features_w2v_proj}.
-\input{tables/features_w2v_size}
-\input{tables/features_w2v_proj}
 % has to be here to be shown on page 4
 \input{figures/first_layer}
 
-\subsubsection{Larger Supervised Convolutional Architecture}
-\label{sec:scf_size}
-As a larger inner dimension clearly showed better performance for the \wvtwo \gls{FE}, we increase the inner dimensions of the \gls{SC} features as well.
-However, as shown in \refTab{table:features_scf_size}, neither increasing the number of filters operating on the waveform nor the number of kernels for the multi-resolutional temporal integration helps to improve the performance.
-Note that the number of parameters of the full model is even larger than for the \wvtwo model in \refTab{table:features_general}, however, a large portion of those parameters is consumed by the linear projection of the features after the \gls{VGG} block.
-\input{tables/features_scf_size}
+%\subsubsection{Larger Supervised Convolutional Architecture}
+%\label{sec:scf_size}
+%As a larger inner dimension clearly showed better performance for the \wvtwo \gls{FE}, we increase the inner dimensions of the \gls{SC} features as well.
+%However, as shown in \refTab{table:features_scf_size}, neither increasing the number of filters operating on the waveform nor the number of kernels for the multi-resolutional temporal integration helps to improve the performance.
+%Note that the number of parameters of the full model is even larger than for the \wvtwo model in \refTab{table:features_general}, however, a large portion of those parameters is consumed by the linear projection of the features after the \gls{VGG} block.
+%\input{tables/features_scf_size}
 
-\subsubsection{First Layer Window Size}
-\label{sec:scf_first_window}
-Furthermore, the effect of the first layer's window size is studied and the results are shown in \refTab{table:features_window_size}.
-They suggest that smaller window sizes than in \cite{tuske2018:waveform} perform better in the context of a \conformer \gls{CTC} model.
-In particular, it does not seem to be necessary to cover one full pitch period which can be around \ms{16} for low voices.
-Instead, the best result is achieved with a window size of \ms{10} and even smaller windows still achieve comparable performance.
-Note that all experiments in \refSec{sec:scf_size} use a window size of \ms{16}.
-\input{tables/features_window_size}
+%\subsection{First Layer Window Size}
+%\label{sec:scf_first_window}
+%Furthermore, the effect of the first layer's window size is studied and the results are shown in \refTab{table:features_window_size}.
+%They suggest that smaller window sizes than in \cite{tuske2018:waveform} perform better in the context of a \conformer \gls{CTC} model.
+%In particular, it does not seem to be necessary to cover one full pitch period which can be around \ms{16} for low voices.
+%Instead, the best result is achieved with a window size of \ms{10} and even smaller windows still achieve comparable performance.
+%Note that all experiments in \refSec{sec:scf_size} use a window size of \ms{16}.
+%\input{tables/features_window_size}
 
 \subsection{\wvtwo Pre-Training}
 The main appeal of the \wvtwo framework is the ability to pre-train the model on unlabeled audio data.
