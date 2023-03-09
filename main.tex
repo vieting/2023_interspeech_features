@@ -229,7 +229,7 @@ We hypothesize that the pre-training mainly benefits the \transformer encoder an
 \subsection{Frequency Response of Learned Filters}
 Finally, we analyze the learned filters of the neural \fes.
 First, the frequency response of the filters in the first layer which operates on the raw waveform is plotted.
-As the order of learned filters in a convolutional layer is arbitrary, we sort the filters by the peak value of the frequency response.
+As the order of learned filters in a convolutional layer is arbitrary, we sort the filters by the peak value of the frequency response and by the upper and lower \SI{3}{\decibel} cutoff frequencies as second and third criteria, respectively.
 The plots are depicted in \refFig{fig:first_layer}\,(a)-(d), which share the same color range.
 
 The well known distribution of the Gammatone filters is given in \refFig{fig:first_layer}\,(a) as a reference.
@@ -237,13 +237,15 @@ The well known distribution of the Gammatone filters is given in \refFig{fig:fir
 In line with \cite{tuske2018:waveform}, bandpass filters with a non-linear distribution of center frequencies are learned.
 This confirms, that these filters are also preferred by more advanced neural back-ends like self-attention-based like \conformer which are superior in the exploitation of context information compared to simpler neural back-ends e.g. in \cite{tuske2014raw}.
 The distribution resembles the Gammatone filterbank and with higher center frequencies, the pass band is also wider.
-However, the stopband attenuation is clearly weaker.
+However, the stopband attenuation is clearly weaker and there is also a number of filters with no clear passband and a rather uncharacteristic frequency response.
+This is particularly visible in \refFig{fig:first_layer}\,(e).
 
 The distribution for the \wvtwo \fe's first layer in \refFig{fig:first_layer}\,(c) does not entail this degree of resemblance.
 Again, bandpass filters are learned, however, they have a wider passband, their center frequencies are distributed rather linearly and the stopband attenuation is weak.
+In addition, about 14\% of all filters have their peak at \SI{0}{\kilo\hertz} and another 10\% at \SI{8}{\kilo\hertz} with varying bandwidths.
+Moreover, a number of filters exists with multiple passbands.
 Interestingly, the frequency response of the pre-trained \wvtwo \fe in \refFig{fig:first_layer}\,(d) is very similar to \refFig{fig:first_layer}\,(c).
 This indicates that the properties learned in unsupervised pre-training and supervised \gls{CTC} training are similar.
-% for SCF, first 9 filters have peak at 0Hz, for wav2vec 75 filters
 
 \section{Conclusions}
 
