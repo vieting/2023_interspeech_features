@@ -195,6 +195,7 @@ The proposed \fe in \cite{asapp2022performance} uses increasing inner dimensions
 The first layer uses a dimension of 64/128 and it is doubled after each layer with an odd index.
 Additionally, we add point-wise convolutional layers after all but the first layer using the same inner dimension as the preceding layer for the last row of the table.
 It can be observed that these configurations perform similarly to the 6 layer 512-dim baseline while reducing the training time by about 21\%, 19\% and 14\%, respectively.
+Note that the \gls{SC} features perform similar to the variant with dimension 64-512 while again around 10\% shorter training time.
 
 The final projection, which comprises about 394k parameters, additionally improves the performance slightly on \devother while degrading minimally on the \textit{test} sets as shown in \refTab{table:features_w2v_proj}.
 \input{tables/features_w2v_size}
