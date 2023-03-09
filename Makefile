@@ -15,8 +15,10 @@ build_tables:
 	cd tables/; ./create_tables.sh
 
 move_figures:
-	sed -i 's/kHz/\\si{\\kilo\\hertz}/g' *.pgf
 	sed -i 's/sffamily/rmfamily/g' *.pgf
+	sed -i 's/\\fontsize{10.000000}{12.000000}/\\fontsize{8.000000}{10.000000}/g' *.pgf
+	sed -i 's/\\fontsize{12.000000}{14.400000}/\\fontsize{10.000000}{12.000000}/g' *.pgf
+	sed -i 's/kHz/\\si{\\kilo\\hertz}/g' *.pgf
 	sed -i 's/Masked Filters/\\#Masked Filters/g' masked_filters.pgf
 	sed -i 's/WER/WER [\\%]/g' masked_filters.pgf
 	sed -i 's/\([a-z0-9_\-]*.png\)/figures\/\1/g' *.pgf
