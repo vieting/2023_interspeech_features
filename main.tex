@@ -227,6 +227,7 @@ We hypothesize that the pre-training mainly benefits the \transformer encoder an
 \input{tables/features_pretraining}
 
 \subsection{Frequency Response of Learned Filters}
+\label{sec:freq_resp}
 Finally, we analyze the learned filters of the neural \fes.
 First, the frequency response of the filters in the first layer which operates on the raw waveform is plotted.
 As the order of learned filters in a convolutional layer is arbitrary, we sort the filters by the peak value of the frequency response and by the upper and lower \SI{3}{\decibel} cutoff frequencies as second and third criteria, respectively.
@@ -250,6 +251,15 @@ This indicates that the properties learned in unsupervised pre-training and supe
 \refFig{fig:first_layer}\,(e) and (f) show the frequency response of the complete \fe.
 For \wvtwo, the distribution of center frequencies is not as linear anymore and as suggested in \cite{choi2022w2v2fe}.
 Moreover, the ratio of peak to mean values is much lower than for the \gls{SC} features.
+
+\subsection{Filter Masking}
+The observed uncharacteristic wideband filters from \refSec{sec:freq_resp} raise the question whether their output is particularly helpful for the model in addition to the bandpass filters or if they are just not trained properly and ignored by the system.
+To answer this question, we masked a portion of the 150 filters in the \gls{SC} features' first layer.
+The filters are sorted by the peak-to-average ratio of their frequency response and the $N$ filters with the lowest ratio are masked out and replaced by zeros.
+\TODO{Show results}.
+We can observe that masking the first 20 filters has no effect on the \gls{WER} and only after masking a 50, so a third of all filters, the \gls{WER} degrades significantly.
+This demonstrates that the wideband filters do not contain valuable information for the \gls{ASR} system and are rather the result of a suboptimal training process.
+Future work should address this observation to allow a better exploitation of the \fe's potential.
 
 \section{Conclusions}
 
