@@ -170,9 +170,10 @@ Each model is trained on a single \gls{GPU}.
 The results, namely the \glspl{WER} on the LibriSpeech \textit{dev} and \textit{test} sets, for the different \fes are shown in \refTab{table:features_general}.
 The baseline performance using Gammatone features is improved compared to \cite{zhou2022efficient} mainly by disabling gradient noise and re-tuning the peak learning rate.
 We can observe that all \fes are within a close range.
-The \gls{SC} features slightly outperform the Gammatone baseline, while log Mel features are again marginally better and the \wvtwo \fe yields the best results.
+The \gls{SC} features slightly outperform the Gammatone baseline, while log Mel features and the \wvtwo \fe are again better with advantages on \devother and \testother, respectively.
 This demonstrates that learnable neural \fes are competitive with hand-designed methods in a purely supervised setup with 960h of training data.
 However, a clear advantage of these techniques cannot be deduced from the experimental results.
+
 The number of parameters for Gammatone and log Mel features refers to the \gls{FIR} and Mel filterbanks, respectively, that we use in our implementation even if they are not trainable.
 The differences in the total number of parameters are influenced by the size of the \fe, but also of the linear layer before the \conformer which grows large as the feature dimension increases.
 \input{tables/features_general}
@@ -187,7 +188,7 @@ Additionally, the size of the first window operating on the waveform is analyzed
 To understand where \wvtwo uses the parameters and how much they contribute to the \gls{FE}'s performance, we run it with different configurations.
 The results for different widths and depths are shown in \refTab{table:features_w2v_size}.
 The kernel sizes and strides were chosen as (10, 3, 3, 3, 3, 2), (5, 2, 2, 2, 2, 2) for 6 layers, (10, 6, 3, 3, 3), (5, 4, 2, 2, 2) for 5 layers, (10, 6, 6, 3), (5, 4, 4, 2) for 4 layers, (20, 6, 6), (10, 4, 4) for 3 layers and (32, 20), (16, 10) for 2 layers.
-The results show that a larger inner dimension leads to a better performance
+The results show that decreasing the inner dimension deteriorates the performance, however, a larger dimension does not improve over the 512-dim baseline.
 In contrast, no major effect can be observed regarding the number of layers.
 We also tried a variant with only one layer using kernel size 320 and stride 160 which did not converge.
 
@@ -195,7 +196,7 @@ The proposed \fe in \cite{asapp2022performance} uses increasing inner dimensions
 The first layer uses a dimension of 64/128 and it is doubled after each layer with an odd index.
 Additionally, we add point-wise convolutional layers after all but the first layer using the same inner dimension as the preceding layer for the last row of the table.
 It can be observed that these configurations perform similarly to the 6 layer 512-dim baseline while reducing the training time by about 21\%, 19\% and 14\%, respectively.
-Note that the \gls{SC} features perform similar to the variant with dimension 64-512 while again around 10\% shorter training time.
+Note that the \gls{SC} features perform similar to the variant with dimension 64-512 with again around 10\% shorter training time.
 
 The final projection, which comprises about 394k parameters, additionally improves the performance slightly on \devother while degrading minimally on the \textit{test} sets as shown in \refTab{table:features_w2v_proj}.
 \input{tables/features_w2v_size}
@@ -214,7 +215,7 @@ Note that the number of parameters of the full model is even larger than for the
 \label{sec:scf_first_window}
 Furthermore, the effect of the first layer's window size is studied and the results are shown in \refTab{table:features_window_size}.
 They suggest that smaller window sizes than in \cite{tuske2018:waveform} perform better in the context of a \conformer \gls{CTC} model.
-In particular, it does not seem to be necessary to cover one full pitch period which is around \ms{16} for low voices.
+In particular, it does not seem to be necessary to cover one full pitch period which can be around \ms{16} for low voices.
 Instead, the best result is achieved with a window size of \ms{10} and even smaller windows still achieve comparable performance.
 Note that all experiments in \refSec{sec:scf_size} use a window size of \ms{16}.
 \input{tables/features_window_size}
@@ -222,7 +223,7 @@ Note that all experiments in \refSec{sec:scf_size} use a window size of \ms{16}.
 \subsection{\wvtwo Pre-Training}
 The main appeal of the \wvtwo framework is the ability to pre-train the model on unlabeled audio data.
 \cite{facebook2020wav2vec2} even reports relative \gls{WER} improvements of about 10\% on the \textit{other} subsets for their experiments on LibriSpeech when pre-training on the same data as used in supervised training compared to pure supervised training from scratch.
-Here, we study this effect for the \fe only by using the parameters of an \fe pre-trained on LibriSpeech\footnote{\raggedright\url{https://github.com/facebookresearch/fairseq/blob/main/examples/wav2vec/README.md}}, so no external data is added.
+Here, we study this effect only for the \fe by using the parameters of an \fe pre-trained on LibriSpeech\footnote{\raggedright\url{https://github.com/facebookresearch/fairseq/blob/main/examples/wav2vec/README.md}}, so no external data is added.
 During the supervised training, the \fe weights can be further trained or kept frozen.
 As shown in \refTab{table:features_pretraining}, no positive effect can be observed here.
 In fact, using a frozen pre-trained \fe shows clearly worse performance than training the \fe purely supervised from scratch.
@@ -231,18 +232,16 @@ We hypothesize that the pre-training mainly benefits the \transformer encoder an
 
 \subsection{Frequency Response of Learned Filters}
 \label{sec:freq_resp}
-Finally, we analyze the learned filters of the neural \fes.
-First, the frequency response of the filters in the first layer which operates on the raw waveform is plotted.
+To analyze the learned filters of the neural \fes, we first plot the frequency response of the filters in the first layer which operates on the raw waveform.
 As the order of learned filters in a convolutional layer is arbitrary, we sort the filters by the peak value of the frequency response and by the upper and lower \SI{3}{\decibel} cutoff frequencies as second and third criteria, respectively.
 The plots are depicted in \refFig{fig:first_layer}\,(a)-(d), which share the same color range.
 
 The well known distribution of the Gammatone filters is given in \refFig{fig:first_layer}\,(a) as a reference.
 \refFig{fig:first_layer}\,(b) shows the frequency response of the learned \gls{SC} filters.
 In line with \cite{tuske2018:waveform}, bandpass filters with a non-linear distribution of center frequencies are learned.
-This confirms, that these filters are also preferred by more advanced neural back-ends like self-attention-based like \conformer which are superior in the exploitation of context information compared to simpler neural back-ends e.g. in \cite{tuske2014raw}.
-The distribution resembles the Gammatone filterbank and with higher center frequencies, the pass band is also wider.
+This confirms, that these filters are also preferred by more advanced neural back-ends like the self-attention-based \conformer which are superior in the exploitation of context information compared to simpler neural back-ends e.g. in \cite{tuske2014raw}.
+The distribution resembles the Gammatone filterbank and with higher center frequencies, the passband is also wider.
 However, the stopband attenuation is clearly weaker and there is also a number of filters with no clear passband and a rather uncharacteristic frequency response.
-This is particularly visible in \refFig{fig:first_layer}\,(e).
 
 The distribution for the \wvtwo \fe's first layer in \refFig{fig:first_layer}\,(c) does not entail this degree of resemblance.
 Again, bandpass filters are learned, however, they have a wider passband, their center frequencies are distributed rather linearly and the stopband attenuation is weak.
@@ -259,8 +258,8 @@ Moreover, the ratio of peak to mean values is much lower than for the \gls{SC} f
 \input{figures/masked_filters}
 The observed uncharacteristic wideband filters from \refSec{sec:freq_resp} raise the question whether their output is particularly helpful for the model in addition to the bandpass filters or if they are just not trained properly and ignored by the system.
 To answer this question, we masked a portion of the 150 filters in the \gls{SC} features' first layer.
-The filters are sorted by the peak-to-average ratio of their frequency response and the $N$ filters with the lowest ratio are masked out and replaced by zeros.
-In \refFig{fig:masked_filters}, we can observe that masking the first 20 filters has no effect on the \gls{WER} and only after masking a 50, so a third of all filters, the \gls{WER} degrades significantly.
+The filters are sorted by the peak-to-average ratio of their frequency response and the $N$ filters with the lowest ratio are masked out during recognition.
+In \refFig{fig:masked_filters}, we can observe that masking the first 20 filters has no effect on the \gls{WER} and only after masking 50, so a third of all filters, the \gls{WER} degrades significantly.
 This demonstrates that the wideband filters do not contain valuable information for the \gls{ASR} system and are rather the result of a suboptimal training process.
 Future work should address this observation to allow a better exploitation of the \fe's potential.
 

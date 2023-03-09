@@ -1175,7 +1175,7 @@
 \definecolor{textcolor}{rgb}{0.000000,0.000000,0.000000}%
 \pgfsetstrokecolor{textcolor}%
 \pgfsetfillcolor{textcolor}%
-\pgftext[x=4.792118in,y=2.550083in,,base]{\color{textcolor}\rmfamily\fontsize{12.000000}{14.400000}\selectfont (d) wav2vec 2.0 FE (frozen)}%
+\pgftext[x=4.792118in,y=2.550083in,,base]{\color{textcolor}\rmfamily\fontsize{12.000000}{14.400000}\selectfont (d) wav2vec 2.0 FE (pre-training)}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgfsetbuttcap%
