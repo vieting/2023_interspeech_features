@@ -177,6 +177,7 @@ However, a clear advantage of these techniques cannot be deduced from the experi
 The number of parameters for Gammatone and log Mel features refers to the \gls{FIR} and Mel filterbanks, respectively, that we use in our implementation even if they are not trainable.
 The differences in the total number of parameters are influenced by the size of the \fe, but also of the linear layer before the \conformer which grows large as the feature dimension increases.
 \input{tables/features_general}
+\vspace{-0.3cm}
 
 \subsection{Dissecting the wav2vec 2.0 Feature Extractor}
 \label{sec:w2v_components}
@@ -187,9 +188,9 @@ The kernel sizes and strides were chosen as (10, 3, 3, 3, 3, 2), (5, 2, 2, 2, 2,
 The results show that decreasing the inner dimension deteriorates the performance, however, a larger dimension does not improve over the 512-dim baseline.
 In contrast, no major effect can be observed regarding the number of layers.
 We also tried a variant with only one layer using kernel size 320 and stride 160 which did not converge.
-\input{tables/features_w2v_size}
 Removing the final projection with about 394k parameters has no significant impact.
 %The final projection, which comprises about 394k parameters, additionally improves the performance slightly on \devother while degrading minimally on the \textit{test} sets as shown in \refTab{table:features_w2v_proj}.
+\input{tables/features_w2v_size}
 %\input{tables/features_w2v_proj}
 
 The proposed \fe in \cite{asapp2022performance} uses increasing inner dimensions and we use this approach in the last three lines of \refTab{table:features_w2v_size}.
