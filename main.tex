@@ -34,12 +34,13 @@
 \maketitle
  
 \begin{abstract}
-Raw waveform modeling is an interesting research topic for \gls{ASR}.
-\wvtwo has seen large success recently and makes use of a convolutional \fe which operates directly on the speech waveform.
-Typically, this \fe is seen as part of the overall architecture, but this work investigates this component specifically.
-It is used as a replacement for classical feature extraction methods in a \gls{CTC} setup and compared to an alternative neural \fe approach.
-Finally, we analyze the learned representations of both neural \fes.
-\TODO{Revise abstract and include results.}
+\Gls{ASR} systems typically use handcrafted feature extraction pipelines.
+To avoid their inherent information loss and to achieve a more consistent modeling from speech to transcribed text, neural raw waveform \fes are an appealing approach.
+Also the \wvtwo model, which has recently gained large popularity, uses a convolutional \fe which operates directly on the speech waveform.
+However, it is not yet studied extensively in the literature.
+In this work, we study its capability to replace the standard feature extraction methods in a \gls{CTC} \gls{ASR} model and compare it to an alternative neural \fe.
+We show that both are competitive with traditional \fes on the LibriSpeech benchmark and analyze the effect of the individual components.
+Furthermore, we analyze the learned filters and show that the most important information for the \gls{ASR} system is obtained by a set of bandpass filters.
 \end{abstract}
 \noindent\textbf{Index Terms}: speech recognition, feature extraction, raw waveform modeling, wav2vec 2.0
 
