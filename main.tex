@@ -66,9 +66,11 @@ While the \wvtwo \fe is similar to other neural feature extraction methods, it i
 \cite{choi2022w2v2fe} studies the \fe by feeding synthesized sine waves.
 Other works that analyze \wvtwo models rather focus on the large \transformer part of the network which operates at a higher level of abstraction \cite{livescu2021wav2vec_analysis, fan21wvspeakerid, li2023exploration, dieck2022wav2vec}.
 
-\draft{
-Highlight contributions of this paper.
-}
+In this work, we show new insights into the \wvtwo \fe.
+Unlike previous work, we demonstrate that it can be used as a replacement for traditional feature extraction methods for a \gls{CTC} model similar to \gls{SC} features.
+The results show that both are competitive on the LibriSpeech benchmark.
+We analyze the learned filters and show the differences between the characteristics of both neural \fes.
+Finally, we demonstrate that the learned bandpass filters of the \gls{SC} \fe encode the valuable information for the \gls{ASR} system while the remaining wideband filter information is largely ignored.
 
 \section{Related work}
 This paper takes up the line of research that applies learnable feature extraction front-ends for \gls{ASR} \cite{palaz2015convolutional, golik15:cnn, tuske2018:waveform, ravanelli2018sincnet, sainath2015cldnn}.
@@ -125,7 +127,7 @@ Since the other \fes operate at a shift of \ms{10} and the \wvtwo \fe is built i
 This reduces the total receptive field to \ms{15}.
 
 \subsubsection{Supervised Convolutional Features}
-As an alternative comparable neural feature extraction method, we use \gls{SC} features \cite{tuske2018:waveform, vieting2021waveform}.
+As an alternative comparable neural feature extraction method, we use the \gls{SC} features from \cite{tuske2018:waveform, vieting2021waveform}.
 Similarly, a convolutional filterbank with learnable parameters is applied to the waveform.
 As in the case of Gammatones, a temporal integration is performed over each channel.
 However, in this case multiple filters are used for temporal integration allowing for multi-resolutional processing.
