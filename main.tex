@@ -165,6 +165,18 @@ The batch size is 640k samples, which corresponds to \SI{40}{\second} of speech 
 The NAdam optimizer uses a \gls{OCLR} schedule with a peak learning rate of $3\cdot 10^{-4}$ and we train the model for 20 epochs.
 In contrast to \cite{zhou2022efficient}, no gradient noise is applied.
 Each model is trained on a single \gls{GPU}.
+The experiments are carried out using 
+\ifinterspeechfinal
+     RETURNN and RASR
+\else
+     [\textit{toolkits blind for review}]
+\fi
+and configs will be made available at
+\ifinterspeechfinal
+     https://github.com/rwth-i6/.
+\else
+     [\textit{blind for review}].
+\fi
 
 \section{Results}
 The results, namely the \glspl{WER} on the LibriSpeech \textit{dev} and \textit{test} sets, for the different \fes are shown in \refTab{table:features_general}.
@@ -177,7 +189,6 @@ However, a clear advantage of these techniques cannot be deduced from the experi
 The number of parameters for Gammatone and log Mel features refers to the \gls{FIR} and Mel filterbanks, respectively, that we use in our implementation even if they are not trainable.
 The differences in the total number of parameters are influenced by the size of the \fe, but also of the linear layer before the \conformer which grows large as the feature dimension increases.
 \input{tables/features_general}
-\vspace{-0.3cm}
 
 \subsection{Dissecting the wav2vec 2.0 Feature Extractor}
 \label{sec:w2v_components}
@@ -224,9 +235,10 @@ Here, we study this effect only for the \fe by using the parameters of an \fe pr
 During the supervised training, the \fe weights can be further trained or kept frozen.
 As shown in \refTab{table:features_pretraining}, no positive effect can be observed here.
 In fact, using a frozen pre-trained \fe shows clearly worse performance than training the \fe purely supervised from scratch.
-We hypothesize that the pre-training mainly benefits the \transformer encoder and not the \fe while the mismatch between the \transformer encoder in pre-training and \conformer encoder in our setup could also pose a challenge for the case that the \fe is frozen.
+We hypothesize that the pre-training mainly benefits the \transformer encoder and not the \fe while the mismatch between the \transformer encoder in pre-training and \conformer encoder in our setup could also pose a challenge for the frozen \fe.
 \input{tables/features_pretraining}
 
+\vspace{-0.5cm}
 \subsection{Frequency Response of Learned Filters}
 \label{sec:freq_resp}
 To analyze the learned filters of the neural \fes, we first plot the frequency response of the filters in the first layer which operates on the raw waveform.
@@ -243,7 +255,7 @@ However, the stopband attenuation is clearly weaker and there is also a number o
 The distribution for the \wvtwo \fe's first layer in \refFig{fig:first_layer}\,(c) does not entail this degree of resemblance.
 Again, bandpass filters are learned, however, they have a wider passband, their center frequencies are distributed rather linearly and the stopband attenuation is weak.
 In addition, about 14\% of all filters have their peak at \SI{0}{\kilo\hertz} and another 10\% at \SI{8}{\kilo\hertz} with varying bandwidths.
-Moreover, a number of filters exists with multiple passbands.
+A number of filters exists with multiple passbands.
 Interestingly, the frequency response of the pre-trained \wvtwo \fe in \refFig{fig:first_layer}\,(d) is very similar to \refFig{fig:first_layer}\,(c).
 This indicates that the properties learned in unsupervised pre-training and supervised \gls{CTC} training are similar.
 
@@ -268,7 +280,6 @@ Finally, we analyze the learned filters and highlight the differences between bo
 In particular, it is shown that the \gls{SC} \fe's learned bandpass filters encode the valuable information for the \gls{ASR} system while the remaining wideband filter information is largely ignored.
 
 \section{Acknowledgements}
-
 \ifinterspeechfinal
      The authors would like to thank Wei Zhou for providing the baseline \gls{CTC} model.
 \else
