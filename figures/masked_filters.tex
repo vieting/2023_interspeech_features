@@ -1,0 +1,10 @@
+\begin{figure}[htb]
+	% blog post on how to use pgf from matplotlib to latex
+	% https://timodenk.com/blog/exporting-matplotlib-plots-to-latex/
+	% \usepackage{layouts} and \printinunitsof{cm}\prntlen{\textwidth} show that textwidth is 17cm here.
+	\centering
+	\input{figures/masked_filters.pgf}
+	\vspace{-0.3cm}
+	\caption{\gls{WER} [\%] on \devother using the \gls{SC} features, where $N$ filters of the first layer are masked out based on the peak-to-average value of their frequency response.}
+	\label{fig:masked_filters}
+\end{figure}

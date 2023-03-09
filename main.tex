@@ -253,11 +253,11 @@ For \wvtwo, the distribution of center frequencies is not as linear anymore and 
 Moreover, the ratio of peak to mean values is much lower than for the \gls{SC} features.
 
 \subsection{Filter Masking}
+\input{figures/masked_filters}
 The observed uncharacteristic wideband filters from \refSec{sec:freq_resp} raise the question whether their output is particularly helpful for the model in addition to the bandpass filters or if they are just not trained properly and ignored by the system.
 To answer this question, we masked a portion of the 150 filters in the \gls{SC} features' first layer.
 The filters are sorted by the peak-to-average ratio of their frequency response and the $N$ filters with the lowest ratio are masked out and replaced by zeros.
-\TODO{Show results}.
-We can observe that masking the first 20 filters has no effect on the \gls{WER} and only after masking a 50, so a third of all filters, the \gls{WER} degrades significantly.
+In \refFig{fig:masked_filters}, we can observe that masking the first 20 filters has no effect on the \gls{WER} and only after masking a 50, so a third of all filters, the \gls{WER} degrades significantly.
 This demonstrates that the wideband filters do not contain valuable information for the \gls{ASR} system and are rather the result of a suboptimal training process.
 Future work should address this observation to allow a better exploitation of the \fe's potential.
 

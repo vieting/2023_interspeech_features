@@ -17,8 +17,10 @@ build_tables:
 move_figures:
 	sed -i 's/kHz/\\si{\\kilo\\hertz}/g' *.pgf
 	sed -i 's/sffamily/rmfamily/g' *.pgf
+	sed -i 's/Masked Filters/\\#Masked Filters/g' masked_filters.pgf
+	sed -i 's/WER/WER [\\%]/g' masked_filters.pgf
 	sed -i 's/\([a-z0-9_\-]*.png\)/figures\/\1/g' *.pgf
-	mv *.png figures/
+	mv *.png figures/ || echo "currently no png files available"
 	mv *.pgf figures/
 
 spell:
