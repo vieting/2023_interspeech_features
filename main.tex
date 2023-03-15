@@ -35,7 +35,7 @@
  
 \begin{abstract}
 \Gls{ASR} systems typically use handcrafted feature extraction pipelines.
-To avoid their inherent information loss and to achieve a more consistent modeling from speech to transcribed text, neural raw waveform \fes are an appealing approach.
+To avoid their inherent information loss and to achieve more consistent modeling from speech to transcribed text, neural raw waveform \fes are an appealing approach.
 Also the \wvtwo model, which has recently gained large popularity, uses a convolutional \fe which operates directly on the speech waveform.
 However, it is not yet studied extensively in the literature.
 In this work, we study its capability to replace the standard feature extraction methods in a \gls{CTC} \gls{ASR} model and compare it to an alternative neural \fe.
@@ -50,11 +50,11 @@ Furthermore, we analyze the learned filters and show that the most important inf
 \section{Introduction}
 \glspl{AM} for \gls{ASR} traditionally makes use of hand-designed feature extraction methods like log Mel filterbank features or Gammatone features \cite{schlueter:icassp07}.
 These techniques are motivated by insights into the properties of the human auditory system.
-However, their fixed design inevitably leads to information loss during the feature extraction.
+However, their fixed design inevitably leads to information loss during feature extraction.
 
 This issue can be addressed by neural \fes.
 Since their parameters are learned during training, these \fes can adapt to the need of \glspl{AM} and the loss of particularly helpful information may be avoided.
-A number of works have been proposed in this direction, often using convolutional \glspl{NN} \cite{palaz2015convolutional, golik15:cnn, tuske2018:waveform} but also applying parametrized functions \cite{ravanelli2018sincnet} and other architectures \cite{sainath2015cldnn}.
+Several works have been proposed in this direction, often using convolutional \glspl{NN} \cite{palaz2015convolutional, golik15:cnn, tuske2018:waveform} but also applying parametrized functions \cite{ravanelli2018sincnet} and other architectures \cite{sainath2015cldnn}.
 
 Recently, the \wvtwo framework \cite{facebook2020wav2vec2} has received large attention.
 It is mainly known for its contrastive self-supervised pre-training, which allows to pre-train a model on large amounts of unlabeled audio data.
@@ -75,14 +75,14 @@ Finally, we demonstrate that the learned bandpass filters of the \gls{SC} \fe en
 \section{Related work}
 This paper takes up the line of research that applies learnable feature extraction front-ends for \gls{ASR} \cite{palaz2015convolutional, golik15:cnn, tuske2018:waveform, ravanelli2018sincnet, sainath2015cldnn}.
 In particular, different neural \fes are compared to traditional feature extraction methods.
-We choose to investigate the supervised convolutional \fe from \cite{tuske2018:waveform}, that was also studied in \cite{vieting2021waveform}.
+We choose to investigate the supervised convolutional \fe from \cite{tuske2018:waveform}, which was also studied in \cite{vieting2021waveform}.
 Furthermore, the feature extractor of \wvtwo \cite{facebook2020wav2vec2} is used as a learnable front-end for supervised \gls{ASR} training.
 
 The \wv framework has been established in a series of related papers \cite{facebook2019wav2vec, facebook2019vqwav2vec, facebook2020wav2vec2, facebook2020xlsr}.
 Besides modifications of the self-supervised training criteria -- moving from the future time step prediction in \cite{facebook2019wav2vec} to masked time step prediction -- and incorporating quantization modules, also the architecture has been revised.
 While \cite{facebook2019wav2vec} uses a fully convolutional architecture, \cite{facebook2020wav2vec2} uses a large stack of \transformer blocks to contextualize the convolutional representations.
 %
-Also the \fe itself has been adjusted.
+Also, the \fe itself has been adjusted.
 %\cite{facebook2019wav2vec} uses 5 layers with kernel sizes (10, 8, 4, 4, 4) and strides which are always exactly half the kernel size.
 %All have 512 channels, a group normalization layer with a single group and a \relu nonlinearity.
 %\cite{facebook2020wav2vec2} uses seven layers with kernel sizes (10, 3, 3, 3, 3, 2, 2), strides (5, 2, 2, 2, 2, 2, 2), and a GELU activation function.
@@ -91,7 +91,7 @@ Also the \fe itself has been adjusted.
 In contrast, 7 layers with group normalization in the first layer and a GELU activation function are used in \cite{facebook2020wav2vec2}.
 Additionally, layer normalization and a linear projection are added after the convolutional layers.
 
-While most works analyzing the \wvtwo model focus on the \transformer part, there are papers which study the \fe as well.
+While most works analyzing the \wvtwo model focus on the \transformer part, some papers study the \fe as well.
 The authors of \cite{choi2022w2v2fe} feed synthesized sine waves to a pre-trained model and observe that enough temporal detail is obtained and information about fundamental frequencies is represented in the model's output.
 In particular, they claim that the frequencies are distributed linearly over the Hertz scale, unlike perceptually motivated scales like the Mel scale or the Greenwood function for Gammatone features.
 \cite{livescu2021wav2vec_analysis} states that the learned representations of the \fe are highly correlated with Mel spectrogram features as was determined by the \gls{CCA}, where the correlation is at a high plateau for \fe layers 3 to 7.
@@ -110,27 +110,27 @@ While the separation between \fe and remaining \gls{AM} is not sharp for neural 
 
 \subsection{Feature Extractors}
 \subsubsection{Standard Feature Extraction}
-As a reference, we use standard, hand-designed \fes -- namely log Mel filterbank features and Gammatone features.
-To compute the log Mel filterbank features, first the \gls{STFT} of the waveform is computed with a window size of \ms{25} and a shift of \ms{10}.
-We keep the square of the magnitude and perform Mel warping to obtain a 80-dim vector.
+As a reference, we use standard, hand-designed \fes -- namely, log Mel filterbank features and Gammatone features.
+To compute the log Mel filterbank features, first, the \gls{STFT} of the waveform is computed with a window size of \ms{25} and a shift of \ms{10}.
+We keep the square of the magnitude and perform Mel warping to obtain an 80-dim vector.
 Finally, $\log_{10}$ and normalization are applied.
 
 Gammatone features apply a Gammatone filterbank to the pre-emphasized speech signal, perform temporal integration over each channel using a low pass filter, i.e., the Hanning window with a size of \ms{25} and a shift of \ms{10}, compress using the $10^{th}$ root and finally compute the \gls{DCT} of the values \cite{schlueter:icassp07}.
-Further, the the resulting 50-dim features are normalized.
+Further, the resulting 50-dim features are normalized.
 
 \subsubsection{\wvtwo Feature Extractor}
 The \gls{FE} of the \wvtwo model \cite{facebook2020wav2vec2} mainly consists of 7 convolutional layers.
 They are configured with kernel sizes (10, 3, 3, 3, 3, 2, 2), strides (5, 2, 2, 2, 2, 2, 2), and a GELU activation function.
-The first layer applies group normalization and finally, layer normalization and a linear projection is added.
+The first layer applies group normalization and finally, layer normalization and a linear projection are added.
 The total receptive field of the \wvtwo \fe is \ms{25} and the shift between consecutive frames is \ms{20}.
-Since the other \fes operate at a shift of \ms{10} and the \wvtwo \fe is built in a modular way, we remove the last layer with a stride of 2 in order to achieve features at the same frame rate.
+Since the other \fes operate at a shift of \ms{10} and the \wvtwo \fe is built in a modular way, we remove the last layer with a stride of 2 to achieve features at the same frame rate.
 This reduces the total receptive field to \ms{15}.
 
 \subsubsection{Supervised Convolutional Features}
 As an alternative comparable neural feature extraction method, we use the \gls{SC} features from \cite{tuske2018:waveform, vieting2021waveform}.
 Similarly, a convolutional filterbank with learnable parameters is applied to the waveform.
 As in the case of Gammatones, a temporal integration is performed over each channel.
-However, in this case multiple filters are used for temporal integration allowing for multi-resolutional processing.
+However, in this case, multiple filters are used for temporal integration allowing for multi-resolutional processing.
 Additionally, these filters are learned during training.
 By default, we set the size of the first filterbank to 160, its strides to 10 and the number of channels to 150.
 The second convolutional filter applies 5 temporal integration filters with a size of 40 and strides of 16 each.
@@ -156,12 +156,12 @@ The official LibriSpeech 4-gram \gls{LM} is used and integrated using shallow fu
 \subsection{Data}
 We conduct experiments on the 960h LibriSpeech corpus \cite{panayotov2015librispeech}, which consists of read English speech.
 For the experiments using a pre-trained \wvtwo \fe, the same 960h were used in pre-training.
-The \gls{LM} was trained on the default LibriSpeech \gls{LM} training data which includes the transcriptions of the training set along with the additional 800M-word text only data.
+The \gls{LM} was trained on the default LibriSpeech \gls{LM} training data which includes the transcriptions of the training set along with the additional 800M-word text-only data.
 The evaluation is done on the standard \devclean, \devother, \testclean and \testother sets.
 
 \subsection{Training Details}
 We generally follow the setup in \cite{zhou2022efficient}.
-The batch size is 640k samples, which corresponds to \SI{40}{\second} of speech waveform and the gradients are accumulated over 3 steps.
+The batch size is 640k samples, which corresponds to \SI{40}{\second} of the speech waveform and the gradients are accumulated over 3 steps.
 The NAdam optimizer uses a \gls{OCLR} schedule with a peak learning rate of $3\cdot 10^{-4}$ and we train the model for 20 epochs.
 In contrast to \cite{zhou2022efficient}, no gradient noise is applied.
 Each model is trained on a single \gls{GPU}.
@@ -193,7 +193,7 @@ The differences in the total number of parameters are influenced by the size of 
 \subsection{Dissecting the wav2vec 2.0 Feature Extractor}
 \label{sec:w2v_components}
 It is striking that the \wvtwo \fe uses two orders of magnitude more parameters than the \gls{SC} architecture.
-To understand where \wvtwo uses the them and how much they contribute to the \gls{FE}'s performance, we run it with different configurations.
+To understand where \wvtwo uses them and how much they contribute to the \gls{FE}'s performance, we run it with different configurations.
 The results for different widths and depths are shown in \refTab{table:features_w2v_size}.
 The kernel sizes and strides were chosen as (10, 3, 3, 3, 3, 2), (5, 2, 2, 2, 2, 2) for 6 layers, (10, 6, 3, 3, 3), (5, 4, 2, 2, 2) for 5 layers, (10, 6, 6, 3), (5, 4, 4, 2) for 4 layers, (20, 6, 6), (10, 4, 4) for 3 layers and (32, 20), (16, 10) for 2 layers.
 The results show that decreasing the inner dimension deteriorates the performance, however, a larger dimension does not improve over the 512-dim baseline.
@@ -207,8 +207,8 @@ Removing the final projection with about 394k parameters has no significant impa
 The proposed \fe in \cite{asapp2022performance} uses increasing inner dimensions and we use this approach in the last three lines of \refTab{table:features_w2v_size}.
 The first layer uses a dimension of 64/128 and it is doubled after each layer with an odd index.
 Additionally, we add point-wise convolutional layers after all but the first layer using the same inner dimension as the preceding layer for the last row of the table.
-It can be observed that these configurations perform similarly to the 6 layer 512-dim baseline while reducing the training time by about 21\%, 19\% and 14\%, respectively.
-Note that the \gls{SC} features perform similar to the variant with dimension 64-512 with again around 10\% shorter training time.
+It can be observed that these configurations perform similarly to the 6-layer 512-dim baseline while reducing the training time by about 21\%, 19\% and 14\%, respectively.
+Note that the \gls{SC} features perform similarly to the variant with dimension 64-512 with again around 10\% shorter training time.
 % has to be here to be shown on page 4
 \input{figures/first_layer}
 
@@ -230,7 +230,7 @@ Note that the \gls{SC} features perform similar to the variant with dimension 64
 
 \subsection{\wvtwo Pre-Training}
 The main appeal of the \wvtwo framework is the ability to pre-train the model on unlabeled audio data.
-\cite{facebook2020wav2vec2} even reports relative \gls{WER} improvements of about 10\% on the \textit{other} subsets for their experiments on LibriSpeech when pre-training on the same data as used in supervised training compared to pure supervised training from scratch.
+\cite{facebook2020wav2vec2} even reports relative \gls{WER} improvements of about 10\% on the \textit{other} subsets for their experiments on LibriSpeech when pre-training on the same data as used in supervised training compared to purely supervised training from scratch.
 Here, we study this effect only for the \fe by using the parameters of an \fe pre-trained on LibriSpeech\footnote{\raggedright\url{https://github.com/facebookresearch/fairseq/blob/main/examples/wav2vec/README.md}}, so no external data is added.
 During the supervised training, the \fe weights can be further trained or kept frozen.
 As shown in \refTab{table:features_pretraining}, no positive effect can be observed here.
@@ -245,17 +245,17 @@ To analyze the learned filters of the neural \fes, we first plot the frequency r
 As the order of learned filters in a convolutional layer is arbitrary, we sort the filters by the peak value of the frequency response and by the upper and lower \SI{3}{\decibel} cutoff frequencies as second and third criteria.
 The plots are depicted in \refFig{fig:first_layer}\,(a)-(d), which share the same color range.
 
-The well known distribution of the Gammatone filters is given in \refFig{fig:first_layer}\,(a) as a reference.
+The well-known distribution of the Gammatone filters is given in \refFig{fig:first_layer}\,(a) as a reference.
 \refFig{fig:first_layer}\,(b) shows the frequency response of the learned \gls{SC} filters.
 In line with \cite{tuske2018:waveform}, bandpass filters with a non-linear distribution of center frequencies are learned.
 This confirms, that these filters are also preferred by more advanced neural back-ends like the self-attention-based \conformer which are superior in the exploitation of context information compared to simpler neural back-ends e.g. in \cite{tuske2014raw}.
 The distribution resembles the Gammatone filterbank and with higher center frequencies, the passband is also wider.
-However, the stopband attenuation is clearly weaker and there is also a number of filters with no clear passband and a rather uncharacteristic frequency response.
+However, the stopband attenuation is clearly weaker and there are also several filters with no clear passband and a rather uncharacteristic frequency response.
 
 The distribution for the \wvtwo \fe's first layer in \refFig{fig:first_layer}\,(c) does not entail this degree of resemblance.
 Again, bandpass filters are learned, however, they have a wider passband, their center frequencies are distributed rather linearly and the stopband attenuation is weak.
 In addition, about 14\% of all filters have their peak at \SI{0}{\kilo\hertz} and another 10\% at \SI{8}{\kilo\hertz} with varying bandwidths.
-A number of filters exists with multiple passbands.
+Several filters exist with multiple passbands.
 Interestingly, the frequency response of the pre-trained \wvtwo \fe in \refFig{fig:first_layer}\,(d) is very similar to \refFig{fig:first_layer}\,(c).
 This indicates that the properties learned in unsupervised pre-training and supervised \gls{CTC} training are similar.
 
@@ -265,12 +265,12 @@ Moreover, the ratio of peak to mean values is much lower than for the \gls{SC} f
 
 \subsection{Filter Masking}
 \input{figures/masked_filters}
-The observed uncharacteristic wideband filters from \refSec{sec:freq_resp} raise the question whether their output is particularly helpful for the model in addition to the bandpass filters or if they are just not trained properly and ignored by the system.
+The observed uncharacteristic wideband filters from \refSec{sec:freq_resp} raise the question of whether their output is particularly helpful for the model in addition to the bandpass filters or if they are just not trained properly and ignored by the system.
 To answer this question, we masked a portion of the 150 filters in the \gls{SC} features' first layer.
 The filters are sorted by the peak-to-average ratio of their frequency response and the $N$ filters with the lowest ratio are masked out during recognition.
 In \refFig{fig:masked_filters}, we can observe that masking the first 20 filters has no effect on the \gls{WER} and only after masking 50, so a third of all filters, the \gls{WER} degrades significantly.
 This demonstrates that the wideband filters do not contain valuable information for the \gls{ASR} system and are rather the result of a suboptimal training process.
-Future work should address this observation to allow a better exploitation of the \fe's potential.
+Future work should address this observation to allow better exploitation of the \fe's potential.
 
 \section{Conclusions}
 In this work, we utilize the \wvtwo \fe as a replacement for traditional feature extraction methods in a \gls{CTC} \gls{ASR} model on LibriSpeech.
@@ -283,7 +283,7 @@ In particular, it is shown that the \gls{SC} \fe's learned bandpass filters enco
 \ifinterspeechfinal
      The authors would like to thank Wei Zhou for providing the baseline \gls{CTC} model.
 \else
-     The acknowledgements would likely reveal the author identity and are therefore hidden for the double-blind review process.
+     The acknowledgements would likely reveal the authors' identity and are therefore hidden for the double-blind review process.
 \fi
 
 \bibliographystyle{IEEEtran}
