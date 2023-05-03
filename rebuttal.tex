@@ -1,15 +1,18 @@
 \documentclass[11pt]{extarticle}
-\usepackage[backend=biber,style=alphabetic,]{biblatex}
 \usepackage[a4paper, margin=1in]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{layout}
 \usepackage{siunitx}
 \usepackage{xcolor}
 
-\title{Rebuttal on the Reviews for the Interspeech 2023 Submission \\ "Put Title Here"}
+\title{Rebuttal on the Reviews for the Interspeech 2023 Submission \\ "Comparative Analysis of the wav2vec 2.0 Feature Extractor"}
 % \author{}
 \date{}
 
+\setlength{\voffset}{-0.75in}
+\setlength{\hoffset}{-25pt}
+\setlength{\textheight}{800pt}
+\setlength{\textwidth}{500pt}
 \pagenumbering{gobble}
 
 \begin{document}
@@ -19,36 +22,33 @@ First of all, we thank all the reviewers for their time and valuable feedback! T
 \paragraph{Motivation}
 \begin{quote}\textit{
 Light-weight audio frontends represent an interesting track to replace classic mel spectrograms, but W2V2 FE is very heavy compared to the considered competitors here, and it does not seem to yield interesting results.
-\[...\]
-\[The\] feature encoder in wav2vec2.0 is generally not updated during the supervised fine-tuning \[...\] and are only trained then with the unsupervised loss.
-\[...\]
-I think from this study, that the interesting question would be whether this front-end is really needed for W2V2 \[...\].
+[...]
+[The] feature encoder in wav2vec2.0 is generally not updated during the supervised fine-tuning [...] and are only trained then with the unsupervised loss.
+[...]
+I think from this study, that the interesting question would be whether this front-end is really needed for W2V2 [...].
 --- Reviewer~1
 }\end{quote}
-Light-weight frontends are an interesting approach, however, recent trends in ASR models tend towards larger models which clearly outperform smaller models.
+Recent trends in ASR models tend towards ever larger models.
 Thus, a natural question is whether larger audio frondends are helpful in a similar way.
-
 It is correct that in wav2vec 2.0, the feature extractor is only trained with the unsupervised loss.
 We study the effect both in Table~3 and Figure~1 and show (for the first time to the best of our knowledge), that similar results and representations are achieved for both an unsupervised and a supervised loss.
-
 We agree that this work raises the question whether the learnable front-end is actually needed in wav2vec 2.0 and related approaches.
 However, this does not contradict the motivation of this work but instead makes it a valuable contribution to the ongoing research on wav2vec-like models.
 
 \paragraph{Baseline Performance}
 \begin{quote}\textit{
 The main drawback here is that the results do look a little bit too poor compared to the literature, and to the papers originally implementing some of the baseline techniques.
-For instance, the conformer paper which also builds upon Mel Filterbanks reaches a performance of 2.0/4.3 on librispeech test splits using the official language model, in the medium version containing 30M parameters.
 --- Reviewer~1
 }\end{quote}
 As the baseline, we use the CTC model from \cite{zhou2022efficient} with some modifications mentioned in the paper which lead to an improvement compared to the original paper (from 7.6\% to 7.1\% on LibriSpeech dev-other).
 This CTC model is part of the pipeline which finally yields a neural transducer model with a competitive performance of 2.1\%/4.1\% on LibriSpeech test-clean and test-other.
 While we acknowledge that the CTC results are inferior to this final performance, we expect the relative trends to transfer.
-The 2.0\%/4.3\% in \cite{google2020conformer} mentioned by Reviewer~1 are comparable to the results in \cite{zhou2022efficient} but are not directly comparable to our setup because a neural LSTM LM is used (not the official 4-gram LM as claimed by the reviewer, which we use here and which is much weaker) and \cite{google2020conformer} uses a transducer while we use a CTC without label feedback.
+The 2.0\%/4.3\% in the conformer paper mentioned by Reviewer~1 are comparable to the results in \cite{zhou2022efficient} but are not directly comparable to our setup because a neural LSTM LM is used and the conformer paper uses a transducer while we use a CTC without label feedback.
 We expect all these points to be orthogonal to the investigation of the feature extractor done here.
 
 \paragraph{Reproducibility / Open Codebase}
 \begin{quote}\textit{
-\[...\] the absence of any codebase does not allow us to inspect the reasons behind the difference in terms of results.
+[The] absence of any codebase does not allow us to inspect the reasons behind the difference in terms of results.
 --- Reviewer~1
 }\end{quote}
 We generally make our recipes available and this also holds for the work proposed here, however, the reference would only be added in the camera ready version as it would have revealed the author identity during the review process.
