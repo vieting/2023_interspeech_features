@@ -1,0 +1,86 @@
+
+Reviewer #1
+Questions
+
+    1. Reviewer confidence (1-3) By selecting a value, you confirm that you are competent to evaluate this paper. If you have doubts about your ability to assess it, do not complete this form but instead use "Contact Meta-Reviewer". 
+        3. Very Confident
+    2. Technical correctness of the work (1-4) Please evaluate the scientific and/or technical correctness of the work. If experiments are presented please consider if enough details are provided on the datasets, baseline and experimental design to allow the experiments to be reproduced or equivalent experiments run. If you give a score of 1 or 2, please provide further explanation in your Detailed Comments.
+        3: Minor issues but credible results
+    3. Clarity of presentation Please evaluate the clarity of the presentation of the work. Take into account the writing and quality of figures, tables etc. If you give a score of 1 or 2 please provide further explanation in your Detailed Comments.
+        2. Difficult to read, requires major revision
+    4. Overall recommendation (1-6)
+        2: Reject: I think this paper should be rejected
+    5. Detailed Comments for Authors Please supply detailed comments to back up your rankings. These comments will be forwarded to the authors of the paper. The comments will help the committee decide the outcome of the paper, and will help justify this decision for the authors. If the paper is accepted, the comments should guide the authors in making revisions for a final manuscript. Hence, the more detailed you make your comments, the more useful your review will be - both for the committee and for the authors. (min. 120 words). Particularly, provide feedback on the following topics: * Key Strength of the paper * Main Weakness of the paper * Novelty/Originality, taking into account the relevance of the work for the Interspeech audience * Technical Correctness, is the work technically and/or scientifically solid? Are sufficient details provided to allow any experiments to be reproduced or equivalent experiments run? * Quality of References, is it a good mix of older and newer papers? Do the authors show a good grasp of the current state of the literature? Do they also cite other papers apart from their own work? * Clarity of Presentation, the English does not need to be flawless, but the text should be understandable
+        Strengths and weaknesses :
+        The main strengths of this paper reside in the analysis experiments that are held, and that gather conclusions that may be interesting for the ASR community. This includes :
+        The difference in terms of frequency response between pretrained and supervised W2V2 extractor.
+        The pretraining effect on FE shown in table 3 .
+        One first big weakness concerns the motivation behind this study. Light-weight audio frontends represent an interesting track to replace classic mel spectrograms, but W2V2 FE is very heavy compared to the considered competitors here, and it does not seem to yield interesting results. Learnable front-ends seem to be very useful for self-supervised pretraining as all the latest models are using those instead of spectrogram representations, but their utility for supervised learning remains limited for the moment, with the best models relying generally on mel representations.
+        Furthermore, the feature encoder in wav2vec2.0 is generally not updated during the supervised fine-tuning of these models ( as written in page 5 here : https://arxiv.org/pdf/2006.11477.pdf ) and are only trained then with the unsupervised loss.
+
+        I think from this study, that the interesting question would be whether this front-end is really needed for W2V2, as replacing the W2V2 FE with mel filterbanks would make it lot more efficient, and helps with inference times for models that need SSL to perform reasonably. You can see similar approaches in the reference I give below in the references part of my comment.
+        A second big weakness concerns the results, which seem too high compared to standards using the same architectures. I detail this in the technical correctness section.
+
+
+        Technical correctness :
+        The experiments led in this paper seem technically correct. The main drawback here is that the results do look a little bit too poor compared to the literature, and to the papers originally implementing some of the baseline techniques. For instance, the conformer paper which also builds upon Mel Filterbanks reaches a performance of 2.0/4.3 on librispeech test splits using the official language model, in the medium version containing 30M parameters. Results in table 1, show a performance here of 3.3/7.2 on the same splits with 40M more parameters. This is even more concerning given that the conformer results have been reproduced pretty well in the main speech frameworks (espnet, speechbrain … ) In this context, and given the very slight improvement compared to the considered baselines here, it seems hard to know if these results are still relevant. And the absence of any codebase does not allow us to inspect the reasons behind the difference in terms of results.
+
+        I also regret the use of experiments only on LibriSpeech 960, which is not the core use of pretrained models given the large training data available, especially in the experiments shown in table 3.
+
+        Quality of references :I would add some literature on neural front-ends for audio non ASR tasks, where performance is heavily improved by learned filters.
+        One example : https://arxiv.org/abs/2101.08596
+        A missing interesting reference would be this work, where the opposite of what this paper does is proposed. They pretrain a w2V2 model replacing the FE with a spectrogram unlearned representation.
+        https://arxiv.org/abs/2211.09944
+
+        Novelty and Originality : The novelty of the work is present but limited. As far as I know, the exact convolutional front-end of W2V2 has not been used in directly supervised scenarios. But many papers have been exploring other convolutional front-ends to replace classic spectrogram representations, this highly cited one for instance: https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43960.pdf
+
+        Clarity of presentation : The paper presentation is not good enough and requires a few reformulation and reshaping work. First, all the tables shown in the paper do not respect the Interspeech template instructions and involve too many drawn lines. It would also be useful as it is done regularly to put the best results in bold, improving readability. Table 2 is very hard to read without a self-containing caption and visual clues. Besides that, the related work part would be highly improved if the citations did not replace the subjects in the sentences.
+
+        Nits and typos :
+        First letter of the first paragraph should be uppercase.
+        “uses the them” in the first lines of section 5.1
+
+Reviewer #2
+Questions
+
+    1. Reviewer confidence (1-3) By selecting a value, you confirm that you are competent to evaluate this paper. If you have doubts about your ability to assess it, do not complete this form but instead use "Contact Meta-Reviewer". 
+        3. Very Confident
+    2. Technical correctness of the work (1-4) Please evaluate the scientific and/or technical correctness of the work. If experiments are presented please consider if enough details are provided on the datasets, baseline and experimental design to allow the experiments to be reproduced or equivalent experiments run. If you give a score of 1 or 2, please provide further explanation in your Detailed Comments.
+        3: Minor issues but credible results
+    3. Clarity of presentation Please evaluate the clarity of the presentation of the work. Take into account the writing and quality of figures, tables etc. If you give a score of 1 or 2 please provide further explanation in your Detailed Comments.
+        3. Clear enough, could benefit from some revision
+    4. Overall recommendation (1-6)
+        3: Weak Reject: I am leaning to reject this paper
+    5. Detailed Comments for Authors Please supply detailed comments to back up your rankings. These comments will be forwarded to the authors of the paper. The comments will help the committee decide the outcome of the paper, and will help justify this decision for the authors. If the paper is accepted, the comments should guide the authors in making revisions for a final manuscript. Hence, the more detailed you make your comments, the more useful your review will be - both for the committee and for the authors. (min. 120 words). Particularly, provide feedback on the following topics: * Key Strength of the paper * Main Weakness of the paper * Novelty/Originality, taking into account the relevance of the work for the Interspeech audience * Technical Correctness, is the work technically and/or scientifically solid? Are sufficient details provided to allow any experiments to be reproduced or equivalent experiments run? * Quality of References, is it a good mix of older and newer papers? Do the authors show a good grasp of the current state of the literature? Do they also cite other papers apart from their own work? * Clarity of Presentation, the English does not need to be flawless, but the text should be understandable
+        Strength: This paper presents detailed speech recognition results when using wave2vec 2.0 as a feature extractor, which is very useful as an experimental result.
+
+        Weakness: Around 2015, this kind of story was analyzed from the perspective of what is learned when raw speech waveforms are put into a neural network. Reference [23] is one of them, but Sainath's paper shown below is also the case, and it has been known since around this time that something like Mel FB can be learned, I'm not sure how much novelty there is in this paper.
+        T.N. Sainath, R.J. Weiss, A. Senior, K.W. Wilson, and O. Vinyls, “Learning the speech front-end with raw waveform CLDNNs,” Proc. Interspeech, 2015.
+
+        Comments: The explanation of the details of the experiment is a little difficult to understand, so please write it a little more clearly.
+
+Reviewer #4
+Questions
+
+    1. Reviewer confidence (1-3) By selecting a value, you confirm that you are competent to evaluate this paper. If you have doubts about your ability to assess it, do not complete this form but instead use "Contact Meta-Reviewer". 
+        3. Very Confident
+    2. Technical correctness of the work (1-4) Please evaluate the scientific and/or technical correctness of the work. If experiments are presented please consider if enough details are provided on the datasets, baseline and experimental design to allow the experiments to be reproduced or equivalent experiments run. If you give a score of 1 or 2, please provide further explanation in your Detailed Comments.
+        4: Technically solid
+    3. Clarity of presentation Please evaluate the clarity of the presentation of the work. Take into account the writing and quality of figures, tables etc. If you give a score of 1 or 2 please provide further explanation in your Detailed Comments.
+        3. Clear enough, could benefit from some revision
+    4. Overall recommendation (1-6)
+        3: Weak Reject: I am leaning to reject this paper
+    5. Detailed Comments for Authors Please supply detailed comments to back up your rankings. These comments will be forwarded to the authors of the paper. The comments will help the committee decide the outcome of the paper, and will help justify this decision for the authors. If the paper is accepted, the comments should guide the authors in making revisions for a final manuscript. Hence, the more detailed you make your comments, the more useful your review will be - both for the committee and for the authors. (min. 120 words). Particularly, provide feedback on the following topics: * Key Strength of the paper * Main Weakness of the paper * Novelty/Originality, taking into account the relevance of the work for the Interspeech audience * Technical Correctness, is the work technically and/or scientifically solid? Are sufficient details provided to allow any experiments to be reproduced or equivalent experiments run? * Quality of References, is it a good mix of older and newer papers? Do the authors show a good grasp of the current state of the literature? Do they also cite other papers apart from their own work? * Clarity of Presentation, the English does not need to be flawless, but the text should be understandable
+        Summary:
+        1. This paper compares different features as a starting point for ASR acoustic + LM training using WER metric
+        2. Authors compared following feature extractors: Log Mel features (80xT), Gammatone features (50xT), Wav2vec 2.0 feature encoder latent space (Z) features (512xT), and supervised convolutional features (750xT).
+        3. The authors used the aforementioned features to calculate WER using various experimental settings. They also compared the size of the Wav2vec model with other features, as well as how much self-supervised learned features contributed to the WER performance in ASR.
+        4. Additionally, the authors compared the filter response of the different features.
+
+        Review comments:
+
+        1. Not clear what LM have they used here, but since you are comparing features, probably greedy decoding might be a good choice and we can remove additional variations.
+        2. The wav2vec 2.0 paper highlights how context (C) features are learned through masking and utilized as features for acoustic models (AMs). The paper suggests that contextual features, as opposed to front-end (FE) features, yield the best performance in automatic speech recognition (ASR) tasks. However, if the authors can elaborate on their reasoning behind using these features, it would help the readers better understand their contribution to the study.
+        3. Table 3 indicates a minimal performance difference between the use of wav2vec 2.0 features before and after pre-training. This observation raises the question if these features alone are responsible for the good performance achieved through self-supervised learning.
+        4. Have you conducted an experiment with stacked wav2vec 2.0 features to compare with SC? This is minor but for fair comparison this setting should be added as well.
+        5. The comparison of filter responses at initial layers provides insightful information. 
